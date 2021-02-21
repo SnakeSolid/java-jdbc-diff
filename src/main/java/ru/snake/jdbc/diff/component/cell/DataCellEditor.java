@@ -41,6 +41,8 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 		this.button = new JButton();
 		this.button.addActionListener(this);
 		this.button.setBorderPainted(false);
+		this.button.setFocusPainted(false);
+		this.button.setContentAreaFilled(false);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -48,11 +50,11 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 
 		if (source == button) {
 			DataCell leftCell = left.get(row).get(column);
-			DataCell rightCell = left.get(row).get(column);
+			DataCell rightCell = right.get(row).get(column);
 			Object leftObject = leftCell.getObject();
 			Object rightObject = rightCell.getObject();
 
-			if (leftObject != null && rightObject != null) {
+			if (leftObject != null || rightObject != null) {
 				ObjectCompareDialog dialog = mainFrame.getObjectCompareDialog();
 				dialog.compareObjects(leftObject, rightObject);
 				dialog.setVisible(true);

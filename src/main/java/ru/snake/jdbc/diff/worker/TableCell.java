@@ -1,16 +1,14 @@
 package ru.snake.jdbc.diff.worker;
 
-import java.util.Arrays;
-
 public class TableCell {
 
 	private final String text;
 
-	private final byte[] binary;
+	private final Object object;
 
-	private TableCell(final String text, final byte[] binary) {
+	private TableCell(final String text, final Object object) {
 		this.text = text;
-		this.binary = binary;
+		this.object = object;
 	}
 
 	/**
@@ -21,15 +19,15 @@ public class TableCell {
 	}
 
 	/**
-	 * @return the binary
+	 * @return the object
 	 */
-	public byte[] getBinary() {
-		return binary;
+	public Object getObject() {
+		return object;
 	}
 
 	@Override
 	public String toString() {
-		return "TableCell [text=" + text + ", binary=" + Arrays.toString(binary) + "]";
+		return "TableCell [text=" + text + ", object=" + object + "]";
 	}
 
 	public static TableCell empty() {
@@ -40,8 +38,8 @@ public class TableCell {
 		return new TableCell(text, null);
 	}
 
-	public static TableCell binary(final byte[] binary) {
-		return new TableCell(hexEncode(binary), binary);
+	public static TableCell binary(final byte[] binary, final Object object) {
+		return new TableCell(hexEncode(binary), object);
 	}
 
 	/**

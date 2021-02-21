@@ -7,15 +7,15 @@ import ru.snake.jdbc.diff.worker.TableCell;
 
 public class TextMapper implements ColumnMapper {
 
-	private final String fieldName;
+	private final int index;
 
-	public TextMapper(final String fieldName) {
-		this.fieldName = fieldName;
+	public TextMapper(final int index) {
+		this.index = index;
 	}
 
 	@Override
 	public TableCell map(ResultSet resultSet) throws SQLException {
-		Object value = resultSet.getObject(fieldName);
+		Object value = resultSet.getObject(index);
 
 		if (resultSet.wasNull()) {
 			return TableCell.empty();
@@ -28,7 +28,7 @@ public class TextMapper implements ColumnMapper {
 
 	@Override
 	public String toString() {
-		return "TextMapper [fieldName=" + fieldName + "]";
+		return "TextMapper [index=" + index + "]";
 	}
 
 }

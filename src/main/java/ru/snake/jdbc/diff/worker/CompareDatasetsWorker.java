@@ -9,15 +9,10 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -33,9 +28,9 @@ import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.ConnectionSettings;
 import ru.snake.jdbc.diff.model.DataCell;
 import ru.snake.jdbc.diff.worker.driver.DriverDeregistrator;
-import ru.snake.jdbc.diff.worker.mapper.BinaryMapper;
 import ru.snake.jdbc.diff.worker.mapper.ColumnMapper;
-import ru.snake.jdbc.diff.worker.mapper.TextMapper;
+import ru.snake.jdbc.diff.worker.mapper.MapperBuilder;
+import ru.snake.jdbc.diff.worker.mapper.Mappers;
 import ru.snake.jdbc.diff.worker.parse.QueryParser;
 import ru.snake.jdbc.diff.worker.query.Query;
 import ru.snake.jdbc.diff.worker.wrapper.DatasetUpdateWrapper;
@@ -118,6 +113,8 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 					Connection rightConnection = rightDriver.connect(rightConnectionUrl, info);
 					Statement leftStatement = leftConnection.createStatement();
 					Statement rightStatement = rightConnection.createStatement()) {
+				int index = 1;
+
 				for (Query query : queries) {
 					ComparedDataset dataset = buildDataset(
 						leftStatement,
@@ -128,6 +125,8 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 					);
 
 					datasetWrapper.pushComparedDataset(dataset);
+
+					index += 1;
 				}
 			}
 		} finally {
@@ -157,24 +156,29 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		final BlobParserFactory rightFactory,
 		final String queryText
 	) throws SQLException {
-		Set<String> columnNames;
+		List<String> columnNames;
 		List<List<TableCell>> leftRows;
 		List<List<TableCell>> rightRows;
-		int nRowsEquals;
 
 		try (ResultSet leftResultSet = leftStatement.executeQuery(queryText);
 				ResultSet rightResultSet = rightStatement.executeQuery(queryText)) {
-			Set<String> leftBinaryTypes = leftConnectionSettings.getBinaryTypes();
-			Map<String, ColumnMapper> leftMappers = createColumnMappers(leftResultSet, leftBinaryTypes);
-			Set<String> rightBinaryTypes = rightConnectionSettings.getBinaryTypes();
-			Map<String, ColumnMapper> rightMappers = createColumnMappers(rightResultSet, rightBinaryTypes);
+			ResultSetMetaData leftMetaData = leftResultSet.getMetaData();
+			ResultSetMetaData rightMetaData = rightResultSet.getMetaData();
+			Mappers mappers = new MapperBuilder(
+				leftMetaData,
+				rightMetaData,
+				leftConnectionSettings.getBinaryTypes(),
+				rightConnectionSettings.getBinaryTypes(),
+				leftFactory,
+				rightFactory
+			).build("Table name");
 
-			columnNames = mergeColumnNames(leftMappers.keySet(), rightMappers.keySet());
-			leftRows = readRows(leftResultSet, leftMappers, columnNames);
-			rightRows = readRows(rightResultSet, rightMappers, columnNames);
-			nRowsEquals = config.getRowSimilarity() * columnNames.size() / 100;
+			leftRows = readRows(leftResultSet, mappers.getLeftMappers());
+			rightRows = readRows(rightResultSet, mappers.getRightMappers());
+			columnNames = mappers.getAllColumns();
 		}
 
+		int nRowsEquals = config.getRowSimilarity() * columnNames.size() / 100;
 		RowsEqualsPredicate predicate = new RowsEqualsPredicate(nRowsEquals);
 		List<DiffListItem<List<TableCell>>> diff = new DiffList<>(leftRows, rightRows, predicate).diff();
 		ComparedDataset dataset = createComparedDataset(diff, columnNames);
@@ -182,9 +186,8 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		return dataset;
 	}
 
-	private ComparedDataset createComparedDataset(List<DiffListItem<List<TableCell>>> diff, Set<String> columnNames) {
+	private ComparedDataset createComparedDataset(List<DiffListItem<List<TableCell>>> diff, List<String> columnNames) {
 		String name = "Table Name";
-		ArrayList<String> columnList = new ArrayList<>(columnNames);
 		List<List<DataCell>> left = new ArrayList<>();
 		List<List<DataCell>> right = new ArrayList<>();
 
@@ -193,7 +196,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 			right.add(createDataRow(diffItem.getRight(), diffItem.getLeft()));
 		}
 
-		return new ComparedDataset(name, columnList, left, right);
+		return new ComparedDataset(name, columnNames, left, right);
 	}
 
 	private List<DataCell> createDataRow(List<TableCell> thisRow, List<TableCell> otherRow) {
@@ -207,7 +210,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 			for (int index = 0; index < thisRow.size(); index += 1) {
 				TableCell cell = thisRow.get(index);
 
-				dataRow.add(DataCell.valid(cell.getText(), cell.getBinary()));
+				dataRow.add(DataCell.valid(cell.getText(), cell.getObject()));
 			}
 		} else {
 			for (int index = 0; index < thisRow.size(); index += 1) {
@@ -217,9 +220,9 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 				String otherText = otherCell.getText();
 
 				if (Objects.equals(thisText, otherText)) {
-					dataRow.add(DataCell.valid(thisText, thisCell.getBinary()));
+					dataRow.add(DataCell.valid(thisText, thisCell.getObject()));
 				} else {
-					dataRow.add(DataCell.changed(thisText, thisCell.getBinary()));
+					dataRow.add(DataCell.changed(thisText, thisCell.getObject()));
 				}
 			}
 		}
@@ -227,49 +230,14 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		return dataRow;
 	}
 
-	private Set<String> mergeColumnNames(Collection<String> leftMappers, Collection<String> rightMappers) {
-		Set<String> columnNames = new LinkedHashSet<>();
-		columnNames.addAll(leftMappers);
-		columnNames.addAll(rightMappers);
-
-		return columnNames;
-	}
-
-	private Map<String, ColumnMapper> createColumnMappers(ResultSet resultSet, Set<String> binaryTypes)
-			throws SQLException {
-		ResultSetMetaData leftMetadata = resultSet.getMetaData();
-		Map<String, ColumnMapper> mappers = new LinkedHashMap<>();
-
-		for (int index = 1; index <= leftMetadata.getColumnCount(); index += 1) {
-			String fieldName = leftMetadata.getColumnName(index);
-			String fieldType = leftMetadata.getColumnTypeName(index);
-
-			if (binaryTypes.contains(fieldType)) {
-				mappers.put(fieldName, new BinaryMapper(fieldName));
-			} else {
-				mappers.put(fieldName, new TextMapper(fieldName));
-			}
-		}
-
-		return mappers;
-	}
-
-	private List<List<TableCell>>
-			readRows(ResultSet resultSet, Map<String, ColumnMapper> mappers, Set<String> columnNames)
-					throws SQLException {
+	private List<List<TableCell>> readRows(ResultSet resultSet, List<ColumnMapper> mappers) throws SQLException {
 		List<List<TableCell>> rows = new ArrayList<>();
 
 		while (resultSet.next()) {
-			List<TableCell> row = new ArrayList<>(columnNames.size());
+			List<TableCell> row = new ArrayList<>(mappers.size());
 
-			for (String columnName : columnNames) {
-				ColumnMapper mapper = mappers.get(columnName);
-
-				if (mapper == null) {
-					row.add(TableCell.empty());
-				} else {
-					row.add(mapper.map(resultSet));
-				}
+			for (ColumnMapper mapper : mappers) {
+				row.add(mapper.map(resultSet));
 			}
 
 			rows.add(row);

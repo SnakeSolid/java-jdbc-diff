@@ -41,7 +41,7 @@ public class DataTableModel extends AbstractTableModel {
 		CellState state = cell.getState();
 		Object object = cell.getObject();
 
-		return state != CellState.VALID && object != null;
+		return /*state != CellState.VALID &&*/ object != null;
 	}
 
 	@Override
