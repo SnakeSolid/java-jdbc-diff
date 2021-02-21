@@ -1,0 +1,119 @@
+package ru.snake.jdbc.diff.model;
+
+import java.util.Set;
+
+/**
+ * Connection settings from worker. Settings contain field mappings and driver
+ * settings.
+ *
+ * @author snake
+ *
+ */
+public final class ConnectionSettings {
+
+	private final String driverPath;
+
+	private final String driverClass;
+
+	private final Set<String> binaryTypes;
+
+	private final String mapperLibrary;
+
+	private final String mapperClass;
+
+	private final String url;
+
+	/**
+	 * Creates new connection settings using given driver path and URL.
+	 *
+	 * @param driverPath
+	 *            driver path
+	 * @param driverClass
+	 *            driver class name
+	 * @param binaryTypes
+	 *            binary type names
+	 * @param url
+	 *            connection URL
+	 * @param url
+	 * @param mapperClass
+	 */
+	public ConnectionSettings(
+		final String driverPath,
+		final String driverClass,
+		final Set<String> binaryTypes,
+		final String mapperLibrary,
+		final String mapperClass,
+		final String url
+	) {
+		this.driverPath = driverPath;
+		this.driverClass = driverClass;
+		this.binaryTypes = binaryTypes;
+		this.mapperLibrary = mapperLibrary;
+		this.mapperClass = mapperClass;
+		this.url = url;
+	}
+
+	/**
+	 * Return path to JDBC driver library.
+	 *
+	 * @return path to driver
+	 */
+	public String getDriverPath() {
+		return driverPath;
+	}
+
+	/**
+	 * Returns JDBC driver class name.
+	 *
+	 * @return driver class name
+	 */
+	public String getDriverClass() {
+		return driverClass;
+	}
+
+	/**
+	 * Returns binary type names in this connections.
+	 *
+	 * @return binary type names
+	 */
+	public Set<String> getBinaryTypes() {
+		return binaryTypes;
+	}
+
+	/**
+	 * Returns mappers library to use for BLOB fields in this connection. If no
+	 * library provided - return {@code null}.
+	 *
+	 * @return mapper library path
+	 */
+	public String getMapperLibrary() {
+		return mapperLibrary;
+	}
+
+	/**
+	 * Returns mappers class to use for BLOB fields in this connection. If no
+	 * class provided - return {@code null}.
+	 *
+	 * @return mapper class name
+	 */
+	public String getMapperClass() {
+		return mapperClass;
+	}
+
+	/**
+	 * Returns JDBC connection URL.
+	 *
+	 * @return connection URL
+	 */
+	public String getUrl() {
+		return url;
+	}
+
+	@Override
+	public String toString() {
+		return "ConnectionSettings [driverPath=" + driverPath + ", driverClass=" + driverClass + ", binaryTypes="
+				+ binaryTypes + ", mapperLibrary=" + mapperLibrary + ", mapperClass=" + mapperClass + ", url=" + url
+				+ "]";
+	}
+
+}
