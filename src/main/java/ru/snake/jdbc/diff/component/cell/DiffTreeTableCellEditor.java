@@ -13,11 +13,8 @@ public class DiffTreeTableCellEditor extends AbstractCellEditor implements Table
 
 	private final JTree tree;
 
-	private final JTable table;
-
-	public DiffTreeTableCellEditor(final JTree tree, final JTable table) {
+	public DiffTreeTableCellEditor(final JTree tree) {
 		this.tree = tree;
-		this.table = table;
 	}
 
 	public Component getTableCellEditorComponent(
@@ -32,21 +29,9 @@ public class DiffTreeTableCellEditor extends AbstractCellEditor implements Table
 
 	public boolean isCellEditable(EventObject e) {
 		if (e instanceof MouseEvent) {
-			int colunm1 = 0;
 			MouseEvent me = (MouseEvent) e;
-			int doubleClick = 2;
-			MouseEvent newME = new MouseEvent(
-				tree,
-				me.getID(),
-				me.getWhen(),
-				me.getModifiersEx(),
-				me.getX() - table.getCellRect(0, colunm1, true).x,
-				me.getY(),
-				doubleClick,
-				me.isPopupTrigger()
-			);
 
-			tree.dispatchEvent(newME);
+			tree.dispatchEvent(me);
 		}
 
 		return false;

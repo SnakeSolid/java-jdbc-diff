@@ -58,7 +58,6 @@ public class ObjectCompareDialog extends JDialog {
 		contentPane.setLayout(layout);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
-
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.TRAILING).addComponent(diffScroll).addComponent(buttonClose)
 		);
