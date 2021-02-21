@@ -42,6 +42,10 @@ public final class TextUndoManager implements UndoableEditListener {
 			}
 
 			undoManager.undoableEditHappened(e);
+		} else {
+			if (edit.isSignificant()) {
+				undoManager.undoableEditHappened(e);
+			}
 		}
 	}
 

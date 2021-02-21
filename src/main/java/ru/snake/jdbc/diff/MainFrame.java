@@ -4,37 +4,50 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.DefaultEditorKit;
+import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import javax.swing.undo.UndoManager;
 
 import ru.snake.jdbc.diff.action.CloseFrameAction;
 import ru.snake.jdbc.diff.action.ExecuteQueryAction;
 import ru.snake.jdbc.diff.action.NewFileAction;
 import ru.snake.jdbc.diff.action.OpenFileAction;
+import ru.snake.jdbc.diff.action.RedoAction;
 import ru.snake.jdbc.diff.action.SaveAsFileAction;
 import ru.snake.jdbc.diff.action.SaveFileAction;
 import ru.snake.jdbc.diff.action.SelectConnectionAction;
+import ru.snake.jdbc.diff.action.UndoAction;
 import ru.snake.jdbc.diff.component.AdjustColumnTable;
 import ru.snake.jdbc.diff.component.cell.DataCellEditor;
 import ru.snake.jdbc.diff.component.cell.DataCellRenderer;
 import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.dialog.ConnectionDialog;
 import ru.snake.jdbc.diff.dialog.ObjectCompareDialog;
+import ru.snake.jdbc.diff.listener.TextEditorMouseListener;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.DataCell;
 import ru.snake.jdbc.diff.model.DataTableModel;
@@ -179,6 +192,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		queryText = new JTextPane(this.model.getQueryDocument());
 		queryText.putClientProperty("caretAspectRatio", CARET_ASPECT_RATIO);
 		queryText.setFont(configuredFont);
+		initUndoManager(queryText);
+		initPopupMenu(queryText);
 
 		JScrollPane queryScroll = new JScrollPane(queryText);
 		queryScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -192,6 +207,59 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		workspace.setDividerLocation(DEFAULT_DIVIDER_LOCATION);
 
 		add(workspace, BorderLayout.CENTER);
+	}
+
+	/**
+	 * Creates undo and redo actions for given text component.
+	 *
+	 * @param textComponent
+	 *            text component
+	 */
+	private void initUndoManager(final JTextComponent textComponent) {
+		UndoManager undoManager = new UndoManager();
+		TextUndoManager textManager = new TextUndoManager(undoManager);
+		Document document = textComponent.getDocument();
+		Action undoAction = new UndoAction(document, textManager);
+		Action redoAction = new RedoAction(document, textManager);
+		document.addUndoableEditListener(textManager);
+
+		InputMap inputMap = textComponent.getInputMap();
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), "Undo");
+		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK), "Redo");
+
+		ActionMap actionMap = textComponent.getActionMap();
+		actionMap.put("Undo", undoAction);
+		actionMap.put("Redo", redoAction);
+	}
+
+	/**
+	 * Creates and set context menu (cut, copy, paste and select all actions)
+	 * for given component.
+	 *
+	 * @param textComponent
+	 *            text component
+	 */
+	private void initPopupMenu(final JTextComponent textComponent) {
+		ActionMap actionMap = textComponent.getActionMap();
+		Action cut = actionMap.get(DefaultEditorKit.cutAction);
+		Action copy = actionMap.get(DefaultEditorKit.copyAction);
+		Action paste = actionMap.get(DefaultEditorKit.pasteAction);
+		Action selectAll = actionMap.get(DefaultEditorKit.selectAllAction);
+
+		cut.putValue(Action.NAME, "Cut");
+		copy.putValue(Action.NAME, "Copy");
+		paste.putValue(Action.NAME, "Paste");
+		selectAll.putValue(Action.NAME, "Select all");
+
+		JPopupMenu popupMenu = new JPopupMenu();
+		popupMenu.add(cut);
+		popupMenu.add(copy);
+		popupMenu.add(paste);
+		popupMenu.addSeparator();
+		popupMenu.add(selectAll);
+
+		MouseListener popupListener = new TextEditorMouseListener(popupMenu);
+		textComponent.addMouseListener(popupListener);
 	}
 
 	/**
