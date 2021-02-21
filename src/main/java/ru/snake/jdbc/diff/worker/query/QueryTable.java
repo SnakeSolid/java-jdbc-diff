@@ -21,8 +21,6 @@ public final class QueryTable {
 
 	private static final Collection<Pattern> TABLE_NAMES;
 
-	private static final Set<String> SQL_KEYWORDS;
-
 	private final String queryText;
 
 	static {
@@ -35,26 +33,8 @@ public final class QueryTable {
 
 		// Table name patterns from SQL
 		TABLE_NAMES = new ArrayList<>();
-		TABLE_NAMES.add(Pattern.compile("\\bfrom\\s+(\\w+(\\.\\w+)", Pattern.CASE_INSENSITIVE));
-		TABLE_NAMES.add(Pattern.compile("\\bjoin\\s+(\\w+(\\.\\w+)", Pattern.CASE_INSENSITIVE));
-
-		// SQL keywords not allowed as table alias
-		SQL_KEYWORDS = new HashSet<>();
-		SQL_KEYWORDS.add("inner");
-		SQL_KEYWORDS.add("left");
-		SQL_KEYWORDS.add("right");
-		SQL_KEYWORDS.add("cross");
-		SQL_KEYWORDS.add("natural");
-		SQL_KEYWORDS.add("join");
-		SQL_KEYWORDS.add("using");
-		SQL_KEYWORDS.add("on");
-		SQL_KEYWORDS.add("where");
-		SQL_KEYWORDS.add("having");
-		SQL_KEYWORDS.add("group");
-		SQL_KEYWORDS.add("order");
-		SQL_KEYWORDS.add("limit");
-		SQL_KEYWORDS.add("into");
-		SQL_KEYWORDS.add("for");
+		TABLE_NAMES.add(Pattern.compile("\\bfrom\\s+(\\w+(\\.\\w+)?)", Pattern.CASE_INSENSITIVE));
+		TABLE_NAMES.add(Pattern.compile("\\bjoin\\s+(\\w+(\\.\\w+)?)", Pattern.CASE_INSENSITIVE));
 	}
 
 	/**
@@ -87,13 +67,8 @@ public final class QueryTable {
 
 			while (matcher.find()) {
 				String tableName = matcher.group(1);
-				String tableAlias = matcher.group(5);
 
-				if (tableAlias == null || SQL_KEYWORDS.contains(tableAlias.toLowerCase())) {
-					result.add(tableName);
-				} else {
-					result.add(tableName + " (" + tableAlias + ")");
-				}
+				result.add(tableName);
 			}
 		}
 

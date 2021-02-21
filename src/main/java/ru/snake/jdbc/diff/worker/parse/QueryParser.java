@@ -77,15 +77,16 @@ public final class QueryParser {
 	 * query variables will be cleared.
 	 */
 	private void pushQuery() {
-		String tableName = null;
+		String queryName = null;
 		String queryString = queryText.toString().trim();
 
 		if (!queryString.isEmpty()) {
 			if (firstComment != null) {
-				tableName = firstComment.substring(2).trim();
+				queryName = firstComment.substring(2).trim();
 			}
 
-			Query query = new Query(tableName, queryString);
+			Query query = new Query(queryName, queryString);
+
 			queries.add(query);
 		}
 

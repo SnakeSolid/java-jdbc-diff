@@ -8,30 +8,30 @@ package ru.snake.jdbc.diff.worker.query;
  */
 public final class Query {
 
-	private final String tableName;
+	private final String queryName;
 
 	private final String queryText;
 
 	/**
 	 * Create query from table name and query test.
 	 *
-	 * @param tableName
-	 *            table name
+	 * @param queryName
+	 *            query name
 	 * @param queryText
 	 *            query text
 	 */
-	public Query(final String tableName, final String queryText) {
-		this.tableName = tableName;
+	public Query(final String queryName, final String queryText) {
+		this.queryName = queryName;
 		this.queryText = queryText;
 	}
 
 	/**
-	 * Returns table name or null.
+	 * Returns query name or null.
 	 *
-	 * @return table name
+	 * @return query name
 	 */
-	public String getTableName() {
-		return tableName;
+	public String getQueryName() {
+		return queryName;
 	}
 
 	/**
@@ -45,7 +45,7 @@ public final class Query {
 
 	@Override
 	public String toString() {
-		return "Query [tableName=" + tableName + ", queryText=" + queryText + "]";
+		return "Query [queryName=" + queryName + ", queryText=" + queryText + "]";
 	}
 
 }

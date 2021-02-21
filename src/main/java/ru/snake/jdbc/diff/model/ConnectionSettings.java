@@ -17,9 +17,9 @@ public final class ConnectionSettings {
 
 	private final Set<String> binaryTypes;
 
-	private final String mapperLibrary;
+	private final String parserLibrary;
 
-	private final String mapperClass;
+	private final String parserClass;
 
 	private final String url;
 
@@ -35,21 +35,21 @@ public final class ConnectionSettings {
 	 * @param url
 	 *            connection URL
 	 * @param url
-	 * @param mapperClass
+	 * @param parserClass
 	 */
 	public ConnectionSettings(
 		final String driverPath,
 		final String driverClass,
 		final Set<String> binaryTypes,
-		final String mapperLibrary,
-		final String mapperClass,
+		final String parserLibrary,
+		final String parserClass,
 		final String url
 	) {
 		this.driverPath = driverPath;
 		this.driverClass = driverClass;
 		this.binaryTypes = binaryTypes;
-		this.mapperLibrary = mapperLibrary;
-		this.mapperClass = mapperClass;
+		this.parserLibrary = parserLibrary;
+		this.parserClass = parserClass;
 		this.url = url;
 	}
 
@@ -81,23 +81,23 @@ public final class ConnectionSettings {
 	}
 
 	/**
-	 * Returns mappers library to use for BLOB fields in this connection. If no
+	 * Returns parser library to use for BLOB fields in this connection. If no
 	 * library provided - return {@code null}.
 	 *
-	 * @return mapper library path
+	 * @return parser library path
 	 */
-	public String getMapperLibrary() {
-		return mapperLibrary;
+	public String getParserLibrary() {
+		return parserLibrary;
 	}
 
 	/**
-	 * Returns mappers class to use for BLOB fields in this connection. If no
+	 * Returns parsers class to use for BLOB fields in this connection. If no
 	 * class provided - return {@code null}.
 	 *
-	 * @return mapper class name
+	 * @return parser class name
 	 */
-	public String getMapperClass() {
-		return mapperClass;
+	public String getParserClass() {
+		return parserClass;
 	}
 
 	/**
@@ -112,7 +112,7 @@ public final class ConnectionSettings {
 	@Override
 	public String toString() {
 		return "ConnectionSettings [driverPath=" + driverPath + ", driverClass=" + driverClass + ", binaryTypes="
-				+ binaryTypes + ", mapperLibrary=" + mapperLibrary + ", mapperClass=" + mapperClass + ", url=" + url
+				+ binaryTypes + ", parserLibrary=" + parserLibrary + ", parserClass=" + parserClass + ", url=" + url
 				+ "]";
 	}
 

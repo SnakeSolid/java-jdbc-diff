@@ -1,5 +1,6 @@
 package ru.snake.jdbc.diff.worker;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Connection;
@@ -33,6 +34,7 @@ import ru.snake.jdbc.diff.worker.mapper.MapperBuilder;
 import ru.snake.jdbc.diff.worker.mapper.Mappers;
 import ru.snake.jdbc.diff.worker.parse.QueryParser;
 import ru.snake.jdbc.diff.worker.query.Query;
+import ru.snake.jdbc.diff.worker.query.QueryTable;
 import ru.snake.jdbc.diff.worker.wrapper.DatasetUpdateWrapper;
 
 /**
@@ -93,21 +95,26 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		Properties info = new Properties();
 
 		String leftDriverClassName = leftConnectionSettings.getDriverClass();
-		String leftConnectionUrl = leftConnectionSettings.getUrl();
-		URL leftUrl = new URL(leftConnectionSettings.getDriverPath());
-		URL[] leftUrls = new URL[] { leftUrl };
-
 		String rightDriverClassName = rightConnectionSettings.getDriverClass();
+		String leftConnectionUrl = leftConnectionSettings.getUrl();
 		String rightConnectionUrl = rightConnectionSettings.getUrl();
-		URL rightUrl = new URL(rightConnectionSettings.getDriverPath());
-		URL[] rightUrls = new URL[] { rightUrl };
-
+		String leftFactoryClass = leftConnectionSettings.getParserClass();
+		String rightFactoryClass = rightConnectionSettings.getParserClass();
+		URL[] leftUrls = new URL[] { new URL(leftConnectionSettings.getDriverPath()) };
+		URL[] rightUrls = new URL[] { new URL(rightConnectionSettings.getDriverPath()) };
+		URL[] factoryUrls = buildParserLibraryUrls();
 		BlobParserFactory parserFactory = new DefaultBlobParserFactory();
 
 		try (URLClassLoader leftClassLoader = new URLClassLoader(leftUrls, ClassLoader.getSystemClassLoader());
-				URLClassLoader rightClassLoader = new URLClassLoader(rightUrls, ClassLoader.getSystemClassLoader())) {
+				URLClassLoader rightClassLoader = new URLClassLoader(rightUrls, ClassLoader.getSystemClassLoader());
+				URLClassLoader factoryClassLoader = new URLClassLoader(
+					factoryUrls,
+					ClassLoader.getSystemClassLoader()
+				);) {
 			Driver leftDriver = loadDriver(leftClassLoader, leftDriverClassName);
 			Driver rightDriver = loadDriver(rightClassLoader, rightDriverClassName);
+			BlobParserFactory leftFactory = loadParserFactory(factoryClassLoader, leftFactoryClass, parserFactory);
+			BlobParserFactory rightFactory = loadParserFactory(factoryClassLoader, rightFactoryClass, parserFactory);
 
 			try (Connection leftConnection = leftDriver.connect(leftConnectionUrl, info);
 					Connection rightConnection = rightDriver.connect(rightConnectionUrl, info);
@@ -116,11 +123,15 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 				int index = 1;
 
 				for (Query query : queries) {
+					String tableName = QueryTable.tableName(query).orElse("-");
+					String datasetName = buildDatasetName(index, query.getQueryName(), tableName);
 					ComparedDataset dataset = buildDataset(
+						datasetName,
+						tableName,
 						leftStatement,
 						rightStatement,
-						parserFactory,
-						parserFactory,
+						leftFactory,
+						rightFactory,
 						query.getQueryText()
 					);
 
@@ -134,6 +145,53 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		}
 
 		return errorMessages;
+	}
+
+	private URL[] buildParserLibraryUrls() throws MalformedURLException {
+		String leftParserLibrary = leftConnectionSettings.getParserLibrary();
+		String rightParserLibrary = rightConnectionSettings.getParserLibrary();
+		List<URL> urls = new ArrayList<>();
+
+		if (leftParserLibrary != null) {
+			urls.add(new URL(leftParserLibrary));
+		}
+
+		if (rightParserLibrary != null) {
+			urls.add(new URL(rightParserLibrary));
+		}
+
+		return urls.toArray(new URL[urls.size()]);
+	}
+
+	private BlobParserFactory loadParserFactory(
+		final URLClassLoader factoryClassLoader,
+		final String factoryClassName,
+		final BlobParserFactory defaultFactory
+	) throws ClassNotFoundException, ReflectiveOperationException {
+		if (factoryClassName == null) {
+			return defaultFactory;
+		} else {
+			Class<?> factoryClass = factoryClassLoader.loadClass(factoryClassName);
+
+			if (BlobParserFactory.class.isAssignableFrom(factoryClass)) {
+				BlobParserFactory factory = (BlobParserFactory) factoryClass.getConstructor().newInstance();
+
+				return factory;
+			}
+
+			throw new RuntimeException(
+				"BLOB parser factory class " + factoryClassName
+						+ " does not implement ru.snake.jdbc.diff.blob.BlobParserFactory."
+			);
+		}
+	}
+
+	private String buildDatasetName(int index, String queryName, String tableName) {
+		if (queryName == null) {
+			return String.format("%d. %s", index, tableName);
+		} else {
+			return String.format("%d. %s", index, queryName);
+		}
 	}
 
 	private Driver loadDriver(URLClassLoader classLoader, String driverClassName)
@@ -150,6 +208,8 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 	}
 
 	private ComparedDataset buildDataset(
+		final String datasetName,
+		final String tableName,
 		final Statement leftStatement,
 		final Statement rightStatement,
 		final BlobParserFactory leftFactory,
@@ -171,7 +231,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 				rightConnectionSettings.getBinaryTypes(),
 				leftFactory,
 				rightFactory
-			).build("Table name");
+			).build(tableName);
 
 			leftRows = readRows(leftResultSet, mappers.getLeftMappers());
 			rightRows = readRows(rightResultSet, mappers.getRightMappers());
@@ -181,13 +241,13 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		int nRowsEquals = config.getRowSimilarity() * columnNames.size() / 100;
 		RowsEqualsPredicate predicate = new RowsEqualsPredicate(nRowsEquals);
 		List<DiffListItem<List<TableCell>>> diff = new DiffList<>(leftRows, rightRows, predicate).diff();
-		ComparedDataset dataset = createComparedDataset(diff, columnNames);
+		ComparedDataset dataset = createComparedDataset(datasetName, diff, columnNames);
 
 		return dataset;
 	}
 
-	private ComparedDataset createComparedDataset(List<DiffListItem<List<TableCell>>> diff, List<String> columnNames) {
-		String name = "Table Name";
+	private ComparedDataset
+			createComparedDataset(String name, List<DiffListItem<List<TableCell>>> diff, List<String> columnNames) {
 		List<List<DataCell>> left = new ArrayList<>();
 		List<List<DataCell>> right = new ArrayList<>();
 

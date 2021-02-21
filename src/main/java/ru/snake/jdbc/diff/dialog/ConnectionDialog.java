@@ -275,9 +275,9 @@ public final class ConnectionDialog extends JDialog implements ActionListener {
 		ConnectionParametersTableModel parametersModel
 	) {
 		String driverString = String.valueOf(driverListModel.getSelectedItem());
-		String mapperString = String.valueOf(blobMappesModel.getSelectedItem());
+		String parserString = String.valueOf(blobMappesModel.getSelectedItem());
 		DriverConfig driverConfig = config.getDrivers().get(driverString);
-		BlobParserConfig parserConfig = config.getBlobParsers().get(mapperString);
+		BlobParserConfig parserConfig = config.getBlobParsers().get(parserString);
 		Map<String, String> parameters = parametersModel.getParameterMap();
 		String url = driverConfig.getUrl();
 
@@ -291,14 +291,14 @@ public final class ConnectionDialog extends JDialog implements ActionListener {
 		String driverPath = driverConfig.getDriverPath();
 		String driverClass = driverConfig.getDriverClass();
 		Set<String> binaryTypes = driverConfig.getBinaryTypes();
-		String mapperLibrary = parserConfig.getLibraryPath();
-		String mapperClass = parserConfig.getParserClass();
+		String parserLibrary = parserConfig.getLibraryPath();
+		String parserClass = parserConfig.getParserClass();
 		ConnectionSettings settings = new ConnectionSettings(
 			driverPath,
 			driverClass,
 			binaryTypes,
-			mapperLibrary,
-			mapperClass,
+			parserLibrary,
+			parserClass,
 			url
 		);
 

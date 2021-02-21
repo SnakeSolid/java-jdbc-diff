@@ -27,7 +27,7 @@ public class DiffTreeTable extends JTable {
 		setSelectionModel(selectionModel.getListSelectionModel());
 		setDefaultRenderer(DiffTreeTableModel.class, cellRenderer);
 		setDefaultRenderer(DiffString.class, new DiffStringCellRenderer());
-		setDefaultEditor(DiffTreeTableModel.class, new DiffTreeTableCellEditor(cellRenderer, this));
+		setDefaultEditor(DiffTreeTableModel.class, new DiffTreeTableCellEditor(cellRenderer));
 		setDefaultEditor(DiffString.class, new DiffStringCellEditor());
 	}
 }
