@@ -12,6 +12,8 @@ import javax.swing.table.TableCellEditor;
 
 import ru.snake.jdbc.diff.MainFrame;
 import ru.snake.jdbc.diff.dialog.ObjectCompareDialog;
+import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
+import ru.snake.jdbc.diff.model.CellState;
 import ru.snake.jdbc.diff.model.DataCell;
 
 public class DataCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
@@ -49,18 +51,37 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 		Object source = e.getSource();
 
 		if (source == button) {
-			DataCell leftCell = left.get(row).get(column);
-			DataCell rightCell = right.get(row).get(column);
-			Object leftObject = leftCell.getObject();
-			Object rightObject = rightCell.getObject();
-
-			if (leftObject != null || rightObject != null) {
-				ObjectCompareDialog dialog = mainFrame.getObjectCompareDialog();
-				dialog.compareObjects(leftObject, rightObject);
+			if (currentValue == null) {
+				// If current value is null - do not show any dialogs.
+			} else if (isCurrentObjectValid()) {
+				Object object = ((DataCell) currentValue).getObject();
+				ObjectViewDialog dialog = mainFrame.getObjectViewDialog();
+				dialog.setViewObject(object);
 				dialog.setVisible(true);
+			} else {
+				DataCell leftCell = left.get(row).get(column);
+				DataCell rightCell = right.get(row).get(column);
+				Object leftObject = leftCell.getObject();
+				Object rightObject = rightCell.getObject();
+
+				if (leftObject != null || rightObject != null) {
+					ObjectCompareDialog dialog = mainFrame.getObjectCompareDialog();
+					dialog.compareObjects(leftObject, rightObject);
+					dialog.setVisible(true);
+				}
 			}
 
 			fireEditingStopped();
+		}
+	}
+
+	private boolean isCurrentObjectValid() {
+		if (currentValue instanceof DataCell) {
+			DataCell dataCell = (DataCell) currentValue;
+
+			return dataCell.getState() == CellState.VALID;
+		} else {
+			return false;
 		}
 	}
 
