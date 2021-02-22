@@ -102,19 +102,28 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		String rightFactoryClass = rightConnectionSettings.getParserClass();
 		URL[] leftUrls = new URL[] { new URL(leftConnectionSettings.getDriverPath()) };
 		URL[] rightUrls = new URL[] { new URL(rightConnectionSettings.getDriverPath()) };
-		URL[] factoryUrls = buildParserLibraryUrls();
+		URL[] leftFactoryUrls = buildParserLibraryUrls(leftConnectionSettings.getParserLibrary());
+		URL[] rightFactoryUrls = buildParserLibraryUrls(rightConnectionSettings.getParserLibrary());
 		BlobParserFactory parserFactory = new DefaultBlobParserFactory();
 
 		try (URLClassLoader leftClassLoader = new URLClassLoader(leftUrls, ClassLoader.getSystemClassLoader());
 				URLClassLoader rightClassLoader = new URLClassLoader(rightUrls, ClassLoader.getSystemClassLoader());
-				URLClassLoader factoryClassLoader = new URLClassLoader(
-					factoryUrls,
+				URLClassLoader leftFactoryClassLoader = new URLClassLoader(
+					leftFactoryUrls,
+					ClassLoader.getSystemClassLoader()
+				);
+				URLClassLoader rightFactoryClassLoader = new URLClassLoader(
+					rightFactoryUrls,
 					ClassLoader.getSystemClassLoader()
 				);) {
 			Driver leftDriver = loadDriver(leftClassLoader, leftDriverClassName);
 			Driver rightDriver = loadDriver(rightClassLoader, rightDriverClassName);
-			BlobParserFactory leftFactory = loadParserFactory(factoryClassLoader, leftFactoryClass, parserFactory);
-			BlobParserFactory rightFactory = loadParserFactory(factoryClassLoader, rightFactoryClass, parserFactory);
+			BlobParserFactory leftFactory = loadParserFactory(leftFactoryClassLoader, leftFactoryClass, parserFactory);
+			BlobParserFactory rightFactory = loadParserFactory(
+				rightFactoryClassLoader,
+				rightFactoryClass,
+				parserFactory
+			);
 
 			try (Connection leftConnection = leftDriver.connect(leftConnectionUrl, info);
 					Connection rightConnection = rightDriver.connect(rightConnectionUrl, info);
@@ -147,20 +156,12 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		return errorMessages;
 	}
 
-	private URL[] buildParserLibraryUrls() throws MalformedURLException {
-		String leftParserLibrary = leftConnectionSettings.getParserLibrary();
-		String rightParserLibrary = rightConnectionSettings.getParserLibrary();
-		List<URL> urls = new ArrayList<>();
-
-		if (leftParserLibrary != null) {
-			urls.add(new URL(leftParserLibrary));
+	private URL[] buildParserLibraryUrls(String libraryPath) throws MalformedURLException {
+		if (libraryPath == null) {
+			return new URL[] {};
+		} else {
+			return new URL[] { new URL(libraryPath) };
 		}
-
-		if (rightParserLibrary != null) {
-			urls.add(new URL(rightParserLibrary));
-		}
-
-		return urls.toArray(new URL[urls.size()]);
 	}
 
 	private BlobParserFactory loadParserFactory(
