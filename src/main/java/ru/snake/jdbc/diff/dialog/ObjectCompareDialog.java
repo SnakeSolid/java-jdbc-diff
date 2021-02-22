@@ -2,6 +2,7 @@ package ru.snake.jdbc.diff.dialog;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +12,11 @@ import java.util.Map.Entry;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 
 import ru.snake.jdbc.diff.MainFrame;
 import ru.snake.jdbc.diff.action.CloseDialogAction;
@@ -60,6 +64,10 @@ public class ObjectCompareDialog extends JDialog {
 
 		CloseDialogAction closeAction = new CloseDialogAction(this);
 		JButton buttonClose = new JButton(closeAction);
+		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		JRootPane rootPane = this.getRootPane();
+
+		rootPane.registerKeyboardAction(closeAction, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 		Container contentPane = getContentPane();
 		GroupLayout layout = new GroupLayout(contentPane);

@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -12,10 +13,13 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableColumnModel;
@@ -24,6 +28,7 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 
 import ru.snake.jdbc.diff.MainFrame;
+import ru.snake.jdbc.diff.action.CloseDialogAction;
 import ru.snake.jdbc.diff.config.BlobParserConfig;
 import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.config.DriverConfig;
@@ -140,6 +145,12 @@ public final class ConnectionDialog extends JDialog implements ActionListener {
 		saveButton.addActionListener(this);
 		cancelButton = new JButton("Close");
 		cancelButton.addActionListener(this);
+
+		CloseDialogAction closeAction = new CloseDialogAction(this);
+		KeyStroke stroke = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0);
+		JRootPane rootPane = this.getRootPane();
+
+		rootPane.registerKeyboardAction(closeAction, stroke, JComponent.WHEN_IN_FOCUSED_WINDOW);
 
 		// @formatter:off
 		layout.setHorizontalGroup(

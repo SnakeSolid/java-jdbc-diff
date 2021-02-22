@@ -34,7 +34,6 @@ public final class CloseDialogAction extends AbstractAction implements Action {
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		this.dialog.setVisible(false);
-		this.dialog.dispose();
 	}
 
 }
