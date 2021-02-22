@@ -46,7 +46,6 @@ import ru.snake.jdbc.diff.component.cell.DataCellEditor;
 import ru.snake.jdbc.diff.component.cell.DataCellRenderer;
 import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.dialog.ConnectionDialog;
-import ru.snake.jdbc.diff.dialog.ObjectCompareDialog;
 import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 import ru.snake.jdbc.diff.listener.TextEditorMouseListener;
 import ru.snake.jdbc.diff.model.ComparedDataset;
@@ -79,9 +78,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 	private ConnectionDialog connectionDialog;
 
-	private ObjectCompareDialog objectCompareDialog;
-
-	private ObjectViewDialog objectViewDialog;
+	private ObjectViewDialog objectCompareDialog;
 
 	private Action newFileAction;
 
@@ -310,31 +307,17 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	}
 
 	/**
-	 * Returns lay initialized {@link ObjectCompareDialog} to select connection
+	 * Returns lay initialized {@link ObjectViewDialog} to select connection
 	 * settings.
 	 *
 	 * @return object compare dialog
 	 */
-	public ObjectCompareDialog getObjectCompareDialog() {
+	public ObjectViewDialog getObjectCompareDialog() {
 		if (objectCompareDialog == null) {
-			objectCompareDialog = new ObjectCompareDialog(this);
+			objectCompareDialog = new ObjectViewDialog(this);
 		}
 
 		return objectCompareDialog;
-	}
-
-	/**
-	 * Returns lay initialized {@link ObjectViewDialog} to select connection
-	 * settings.
-	 *
-	 * @return object view dialog
-	 */
-	public ObjectViewDialog getObjectViewDialog() {
-		if (objectViewDialog == null) {
-			objectViewDialog = new ObjectViewDialog(this);
-		}
-
-		return objectViewDialog;
 	}
 
 	/**

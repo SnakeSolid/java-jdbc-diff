@@ -12,14 +12,16 @@ import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
+import ru.snake.jdbc.diff.MainFrame;
 import ru.snake.jdbc.diff.action.CloseDialogAction;
 import ru.snake.jdbc.diff.algorithm.DiffObject;
 import ru.snake.jdbc.diff.algorithm.DiffObjectItem;
 import ru.snake.jdbc.diff.algorithm.DiffType;
 import ru.snake.jdbc.diff.component.DiffTreeTable;
+import ru.snake.jdbc.diff.component.cell.DiffStringCellEditor;
+import ru.snake.jdbc.diff.component.cell.DiffStringCellRenderer;
 import ru.snake.jdbc.diff.component.model.DiffAbstractTreeTableModel;
 import ru.snake.jdbc.diff.component.model.DiffDataModel;
 import ru.snake.jdbc.diff.component.node.DiffDataNode;
@@ -28,22 +30,28 @@ import ru.snake.jdbc.diff.component.node.DiffString;
 
 public class ObjectCompareDialog extends JDialog {
 
-	private final DiffTreeTable diffTree;
+	private final MainFrame mainFrame;
 
-	public ObjectCompareDialog(JFrame parent) {
-		super(parent, "Object Diff", true);
+	private DiffTreeTable diffTree;
 
-		DiffAbstractTreeTableModel treeTableModel = new DiffDataModel(null);
-		this.diffTree = new DiffTreeTable(treeTableModel);
+	public ObjectCompareDialog(final MainFrame mainFrame) {
+		super(mainFrame, "Object Diff", true);
+
+		this.mainFrame = mainFrame;
 
 		initializeComponents();
 
 		setPreferredSize(new Dimension(640, 640));
 		pack();
-		setLocationRelativeTo(parent);
+		setLocationRelativeTo(mainFrame);
 	}
 
 	private void initializeComponents() {
+		DiffAbstractTreeTableModel treeTableModel = new DiffDataModel(null);
+		diffTree = new DiffTreeTable(treeTableModel);
+		diffTree.setDefaultRenderer(DiffString.class, new DiffStringCellRenderer());
+		diffTree.setDefaultEditor(DiffString.class, new DiffStringCellEditor(mainFrame, treeTableModel));
+
 		JScrollPane diffScroll = new JScrollPane(
 			this.diffTree,
 			JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
