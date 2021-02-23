@@ -2,6 +2,7 @@ package ru.snake.jdbc.diff.component.cell;
 
 import java.awt.Color;
 
+import ru.snake.jdbc.diff.component.node.DiffState;
 import ru.snake.jdbc.diff.model.CellState;
 
 public class ColorManager {
@@ -34,6 +35,20 @@ public class ColorManager {
 		}
 	}
 
+	public static Color getForegroundColor(DiffState state) {
+		switch (state) {
+		case EQUALS:
+		case CHANGED:
+			return Color.BLACK;
+
+		case REMOVED:
+			return Color.WHITE;
+
+		default:
+			return Color.BLACK;
+		}
+	}
+
 	public static Color getBackgroundColor(CellState state) {
 		switch (state) {
 		case VALID:
@@ -43,6 +58,22 @@ public class ColorManager {
 			return CHANGED_COLOR;
 
 		case MISSING:
+			return MISSING_COLOR;
+
+		default:
+			return Color.WHITE;
+		}
+	}
+
+	public static Color getBackgroundColor(DiffState state) {
+		switch (state) {
+		case EQUALS:
+			return VALID_COLOR;
+
+		case CHANGED:
+			return CHANGED_COLOR;
+
+		case REMOVED:
 			return MISSING_COLOR;
 
 		default:
