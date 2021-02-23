@@ -16,7 +16,15 @@ import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 import ru.snake.jdbc.diff.model.CellState;
 import ru.snake.jdbc.diff.model.DataCell;
 
-public class DataCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+/**
+ * Cell editor for difference table. This editor will show
+ * {@link ObjectViewDialog} or {@link ObjectCompareDialog} depending on values
+ * in table.
+ *
+ * @author snake
+ *
+ */
+public final class DataCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 
 	private final MainFrame mainFrame;
 
@@ -32,6 +40,16 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 
 	private Object currentValue;
 
+	/**
+	 * Create new instance of {@link DataCellEditor} for given data tables.
+	 *
+	 * @param mainFrame
+	 *            main frame
+	 * @param left
+	 *            left data table
+	 * @param right
+	 *            right data table
+	 */
 	public DataCellEditor(
 		final MainFrame mainFrame,
 		final List<List<DataCell>> left,
@@ -49,7 +67,7 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 		this.button.setOpaque(true);
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		Object source = e.getSource();
 
 		if (source == button) {
@@ -91,10 +109,16 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 		return currentValue;
 	}
 
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+	public Component getTableCellEditorComponent(
+		final JTable table,
+		final Object value,
+		final boolean isSelected,
+		final int aRow,
+		final int aColumn
+	) {
 		this.currentValue = value;
-		this.row = row;
-		this.column = column;
+		this.row = aRow;
+		this.column = aColumn;
 
 		return button;
 	}

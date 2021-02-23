@@ -1,5 +1,12 @@
 package ru.snake.jdbc.diff.blob;
 
+/**
+ * Creates {@link BlobParser} instances using provided table, column and data
+ * types.
+ *
+ * @author snake
+ *
+ */
 public interface BlobParserFactory {
 
 	/**

@@ -64,10 +64,12 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 	 *            configuration settings
 	 * @param queryText
 	 *            string with queries
-	 * @param connectionSettings
-	 *            connection settings
-	 * @param outputDocument
-	 *            output document
+	 * @param leftConnection
+	 *            left connection settings
+	 * @param rightConnection
+	 *            right connection settings
+	 * @param datasetWrapper
+	 *            data set wrapper
 	 */
 	public CompareDatasetsWorker(
 		final Configuration config,
@@ -156,7 +158,17 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		return errorMessages;
 	}
 
-	private URL[] buildParserLibraryUrls(String libraryPath) throws MalformedURLException {
+	/**
+	 * Creates array of {@link URL} using given library path. If path is null
+	 * returns empty array.
+	 *
+	 * @param libraryPath
+	 *            library path
+	 * @return array of {@link URL}
+	 * @throws MalformedURLException
+	 *             if library path is incorrect
+	 */
+	private URL[] buildParserLibraryUrls(final String libraryPath) throws MalformedURLException {
 		if (libraryPath == null) {
 			return new URL[] {};
 		} else {
@@ -164,11 +176,25 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		}
 	}
 
+	/**
+	 * Loads BLOB factory class from given class loader. If class is null
+	 * returns default BLOB factory as fallback value.
+	 *
+	 * @param factoryClassLoader
+	 *            BLOB factory class loader
+	 * @param factoryClassName
+	 *            BLOB factory class name
+	 * @param defaultFactory
+	 *            default BLOB factory
+	 * @return BLOB factory
+	 * @throws ReflectiveOperationException
+	 *             if reflection error occurred
+	 */
 	private BlobParserFactory loadParserFactory(
 		final URLClassLoader factoryClassLoader,
 		final String factoryClassName,
 		final BlobParserFactory defaultFactory
-	) throws ClassNotFoundException, ReflectiveOperationException {
+	) throws ReflectiveOperationException {
 		if (factoryClassName == null) {
 			return defaultFactory;
 		} else {
@@ -187,7 +213,18 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		}
 	}
 
-	private String buildDatasetName(int index, String queryName, String tableName) {
+	/**
+	 * Build data set name using query name, table and data set index.
+	 *
+	 * @param index
+	 *            data set index
+	 * @param queryName
+	 *            query name
+	 * @param tableName
+	 *            table name
+	 * @return data set name
+	 */
+	private String buildDatasetName(final int index, final String queryName, final String tableName) {
 		if (queryName == null) {
 			return String.format("%d. %s", index, tableName);
 		} else {
@@ -195,7 +232,18 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		}
 	}
 
-	private Driver loadDriver(URLClassLoader classLoader, String driverClassName)
+	/**
+	 * Loads driver using given class name from given class loader.
+	 *
+	 * @param classLoader
+	 *            driver class loader
+	 * @param driverClassName
+	 *            driver class name
+	 * @return driver instance
+	 * @throws ReflectiveOperationException
+	 *             if reflection error occurred
+	 */
+	private Driver loadDriver(final URLClassLoader classLoader, final String driverClassName)
 			throws ClassNotFoundException, ReflectiveOperationException {
 		Class<?> leftDriverClass = classLoader.loadClass(driverClassName);
 
@@ -208,6 +256,28 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		throw new RuntimeException("Driver class " + driverClassName + " does not implement java.sql.Driver.");
 	}
 
+	/**
+	 * Read query result from database and build corresponding compared data
+	 * set.
+	 *
+	 * @param datasetName
+	 *            data set name
+	 * @param tableName
+	 *            table name
+	 * @param leftStatement
+	 *            left prepared statement
+	 * @param rightStatement
+	 *            right prepared statement
+	 * @param leftFactory
+	 *            left BLOB factory
+	 * @param rightFactory
+	 *            right BLOB factory
+	 * @param aQueryText
+	 *            single query text
+	 * @return compared data set
+	 * @throws SQLException
+	 *             if SQL error occurred
+	 */
 	private ComparedDataset buildDataset(
 		final String datasetName,
 		final String tableName,
@@ -215,14 +285,14 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		final Statement rightStatement,
 		final BlobParserFactory leftFactory,
 		final BlobParserFactory rightFactory,
-		final String queryText
+		final String aQueryText
 	) throws SQLException {
 		List<String> columnNames;
 		List<List<TableCell>> leftRows;
 		List<List<TableCell>> rightRows;
 
-		try (ResultSet leftResultSet = leftStatement.executeQuery(queryText);
-				ResultSet rightResultSet = rightStatement.executeQuery(queryText)) {
+		try (ResultSet leftResultSet = leftStatement.executeQuery(aQueryText);
+				ResultSet rightResultSet = rightStatement.executeQuery(aQueryText)) {
 			ResultSetMetaData leftMetaData = leftResultSet.getMetaData();
 			ResultSetMetaData rightMetaData = rightResultSet.getMetaData();
 			Mappers mappers = new MapperBuilder(
@@ -247,8 +317,22 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		return dataset;
 	}
 
-	private ComparedDataset
-			createComparedDataset(String name, List<DiffListItem<List<TableCell>>> diff, List<String> columnNames) {
+	/**
+	 * Creates compared data set from difference between two tables.
+	 *
+	 * @param name
+	 *            data set name
+	 * @param diff
+	 *            table difference
+	 * @param columnNames
+	 *            column names
+	 * @return compared data set
+	 */
+	private ComparedDataset createComparedDataset(
+		final String name,
+		final List<DiffListItem<List<TableCell>>> diff,
+		final List<String> columnNames
+	) {
 		List<List<DataCell>> left = new ArrayList<>();
 		List<List<DataCell>> right = new ArrayList<>();
 
@@ -260,7 +344,16 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		return new ComparedDataset(name, columnNames, left, right);
 	}
 
-	private List<DataCell> createDataRow(List<TableCell> thisRow, List<TableCell> otherRow) {
+	/**
+	 * Creates single data row from single road of table difference.
+	 *
+	 * @param thisRow
+	 *            this difference row
+	 * @param otherRow
+	 *            other difference row
+	 * @return data table row
+	 */
+	private List<DataCell> createDataRow(final List<TableCell> thisRow, final List<TableCell> otherRow) {
 		List<DataCell> dataRow = new ArrayList<>();
 
 		if (thisRow == null) {
@@ -291,7 +384,19 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		return dataRow;
 	}
 
-	private List<List<TableCell>> readRows(ResultSet resultSet, List<ColumnMapper> mappers) throws SQLException {
+	/**
+	 * Read data from given {@link ResultSet}.
+	 *
+	 * @param resultSet
+	 *            result set
+	 * @param mappers
+	 *            column mappers
+	 * @return parsed table data
+	 * @throws SQLException
+	 *             if SQL error occurred
+	 */
+	private List<List<TableCell>> readRows(final ResultSet resultSet, final List<ColumnMapper> mappers)
+			throws SQLException {
 		List<List<TableCell>> rows = new ArrayList<>();
 
 		while (resultSet.next()) {

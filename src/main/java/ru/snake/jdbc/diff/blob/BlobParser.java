@@ -1,5 +1,12 @@
 package ru.snake.jdbc.diff.blob;
 
+/**
+ * BLOB field parser. Parsers binary database field to JSON-like object
+ * structure.
+ *
+ * @author snake
+ *
+ */
 public interface BlobParser {
 
 	/**
@@ -10,6 +17,6 @@ public interface BlobParser {
 	 *            BLOB to parse
 	 * @return parsed object
 	 */
-	public Object parse(final byte[] blob);
+	public Object parse(byte[] blob);
 
 }

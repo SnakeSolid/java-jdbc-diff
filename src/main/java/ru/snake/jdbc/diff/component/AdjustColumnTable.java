@@ -10,18 +10,30 @@ import javax.swing.table.TableColumnModel;
 
 import ru.snake.jdbc.diff.model.DataTableModel;
 
-public class AdjustColumnTable extends JTable {
+/**
+ * Table with automatically calculated column widths.
+ *
+ * @author snake
+ *
+ */
+public final class AdjustColumnTable extends JTable {
 
 	private static final int PREFERRED_COLUMN_WIDTH = 640;
 
-	public AdjustColumnTable(DataTableModel model) {
+	/**
+	 * Creates new instance of table.
+	 *
+	 * @param model
+	 *            table model
+	 */
+	public AdjustColumnTable(final DataTableModel model) {
 		super(model);
 
 		setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 	}
 
 	@Override
-	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
+	public Component prepareRenderer(final TableCellRenderer renderer, final int row, final int column) {
 		TableColumnModel columnModel = getColumnModel();
 		TableColumn tableColumn = columnModel.getColumn(column);
 		Component component = super.prepareRenderer(renderer, row, column);

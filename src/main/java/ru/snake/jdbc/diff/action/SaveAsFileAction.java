@@ -34,8 +34,6 @@ public final class SaveAsFileAction extends AbstractAction implements Action {
 	 *
 	 * @param frame
 	 *            main frame
-	 * @param model
-	 *            main model
 	 */
 	public SaveAsFileAction(final MainFrame frame) {
 		this.frame = frame;

@@ -9,7 +9,14 @@ import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.table.TableCellEditor;
 
-public class DiffTreeTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+/**
+ * Cell editor for tree cells. This editor dispatched all {@link MouseEvent}
+ * events to underlying {@link JTree}.
+ *
+ * @author snake
+ *
+ */
+public final class DiffTreeTableCellEditor extends AbstractCellEditor implements TableCellEditor {
 
 	private final JTree tree;
 
@@ -27,7 +34,7 @@ public class DiffTreeTableCellEditor extends AbstractCellEditor implements Table
 		return tree;
 	}
 
-	public boolean isCellEditable(EventObject e) {
+	public boolean isCellEditable(final EventObject e) {
 		if (e instanceof MouseEvent) {
 			MouseEvent me = (MouseEvent) e;
 

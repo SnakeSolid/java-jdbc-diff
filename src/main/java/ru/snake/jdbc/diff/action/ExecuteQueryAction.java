@@ -85,8 +85,9 @@ public final class ExecuteQueryAction extends AbstractAction implements Action, 
 	}
 
 	@Override
-	public void connectionsChanged(MainModel model, ConnectionSettings left, ConnectionSettings right) {
-		if (model == this.model) {
+	public void
+			connectionsChanged(final MainModel aModel, final ConnectionSettings left, final ConnectionSettings right) {
+		if (model == aModel) {
 			setEnabled(left != null && right != null);
 		}
 	}

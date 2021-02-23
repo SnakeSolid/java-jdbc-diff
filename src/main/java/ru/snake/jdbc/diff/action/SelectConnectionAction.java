@@ -31,8 +31,6 @@ public final class SelectConnectionAction extends AbstractAction implements Acti
 	 *
 	 * @param mainFrame
 	 *            main frame
-	 * @param config
-	 *            configuration settings
 	 */
 	public SelectConnectionAction(final MainFrame mainFrame) {
 		this.mainFrame = mainFrame;

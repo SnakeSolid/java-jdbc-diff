@@ -71,6 +71,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 	private static final int DEFAULT_DIVIDER_LOCATION = 350;
 
+	private static final int DATASET_TABLE_GAP = 6;
+
 	private final Configuration config;
 
 	private final MainModel model;
@@ -347,27 +349,41 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	}
 
 	@Override
-	public void comparedDatasetsCleared(MainModel model) {
-		datasetTabs.removeAll();
+	public void comparedDatasetsCleared(final MainModel aModel) {
+		if (model == aModel) {
+			datasetTabs.removeAll();
+		}
 	}
 
 	@Override
-	public void comparedDatasetPushed(MainModel model, ComparedDataset dataset) {
-		JScrollPane leftTableScroll = createDatasetTable(dataset, dataset.getLeft());
-		JScrollPane rightTableScroll = createDatasetTable(dataset, dataset.getRight());
-		rightTableScroll.setVerticalScrollBar(leftTableScroll.getVerticalScrollBar());
+	public void comparedDatasetPushed(final MainModel aModel, final ComparedDataset dataset) {
+		if (model == aModel) {
+			JScrollPane leftTableScroll = createDatasetTable(dataset, dataset.getLeft());
+			JScrollPane rightTableScroll = createDatasetTable(dataset, dataset.getRight());
+			rightTableScroll.setVerticalScrollBar(leftTableScroll.getVerticalScrollBar());
 
-		GridLayout layout = new GridLayout(1, 2);
-		layout.setHgap(6);
+			GridLayout layout = new GridLayout(1, 2);
+			layout.setHgap(DATASET_TABLE_GAP);
 
-		JPanel diffTables = new JPanel();
-		diffTables.setLayout(layout);
-		diffTables.add(leftTableScroll);
-		diffTables.add(rightTableScroll);
+			JPanel diffTables = new JPanel();
+			diffTables.setLayout(layout);
+			diffTables.add(leftTableScroll);
+			diffTables.add(rightTableScroll);
 
-		datasetTabs.addTab(dataset.getName(), diffTables);
+			datasetTabs.addTab(dataset.getName(), diffTables);
+		}
 	}
 
+	/**
+	 * Creates scrollable table component using given data table as data source.
+	 * Cell editor will be able to open compare dialog based on data set data.
+	 *
+	 * @param dataset
+	 *            data set
+	 * @param dataTable
+	 *            data table
+	 * @return prepared table component
+	 */
 	private JScrollPane createDatasetTable(final ComparedDataset dataset, final List<List<DataCell>> dataTable) {
 		List<String> columnNames = dataset.getColumnNames();
 		DataTableModel tableModel = new DataTableModel(columnNames, dataTable);

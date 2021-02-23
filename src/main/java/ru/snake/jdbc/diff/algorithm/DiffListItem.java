@@ -1,14 +1,14 @@
 package ru.snake.jdbc.diff.algorithm;
 
 /**
- * Single diff item.
+ * Single difference item.
  *
  * @author snake
  *
  * @param <T>
  *            item type
  */
-public class DiffListItem<T> {
+public final class DiffListItem<T> {
 
 	private final DiffType type;
 

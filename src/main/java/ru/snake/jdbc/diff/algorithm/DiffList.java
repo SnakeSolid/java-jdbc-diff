@@ -6,7 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiPredicate;
 
-public class DiffList<T> {
+/**
+ * Calculate difference between two lists base on Longest common subsequence
+ * algorithm, see problem description
+ * {@link https://en.wikipedia.org/wiki/Longest_common_subsequence_problem}.
+ * This algorithm requires N^2 memory and compares so it should used only for
+ * small lists.
+ *
+ * @author snake
+ *
+ * @param <T>
+ *            item type
+ */
+public final class DiffList<T> {
 
 	private final List<T> left;
 
@@ -16,6 +28,16 @@ public class DiffList<T> {
 
 	private final int[][] lcsLengths;
 
+	/**
+	 * Create new list difference calculator for given lists.
+	 *
+	 * @param left
+	 *            left list
+	 * @param right
+	 *            right list
+	 * @param comparator
+	 *            object comparator
+	 */
 	public DiffList(final List<T> left, final List<T> right, final BiPredicate<T, T> comparator) {
 		this.left = left;
 		this.right = right;
@@ -23,6 +45,12 @@ public class DiffList<T> {
 		this.lcsLengths = new int[left.size()][right.size()];
 	}
 
+	/**
+	 * Calculate difference between lists and return new list with
+	 * {@link DiffListItem} as difference result.
+	 *
+	 * @return difference between lists
+	 */
 	public List<DiffListItem<T>> diff() {
 		fillLcsLengths();
 
@@ -32,7 +60,14 @@ public class DiffList<T> {
 		return result;
 	}
 
-	private List<DiffListItem<T>> buildItems(List<DiffType> types) {
+	/**
+	 * Creates comparing result based on source lists and calculated difference.
+	 *
+	 * @param types
+	 *            difference types
+	 * @return list of compared items
+	 */
+	private List<DiffListItem<T>> buildItems(final List<DiffType> types) {
 		List<DiffListItem<T>> result = new ArrayList<>();
 		Iterator<T> leftIterator = left.iterator();
 		Iterator<T> rightIterator = right.iterator();
@@ -76,8 +111,8 @@ public class DiffList<T> {
 				leftIndex -= 1;
 				rightIndex -= 1;
 			} else {
-				int leftValue = getLcsLength(leftIndex - 1, rightIndex);
-				int rightValue = getLcsLength(leftIndex, rightIndex - 1);
+				int leftValue = getMaximalLength(leftIndex - 1, rightIndex);
+				int rightValue = getMaximalLength(leftIndex, rightIndex - 1);
 
 				if (leftValue > rightValue) {
 					result.add(DiffType.LEFT);
@@ -109,16 +144,25 @@ public class DiffList<T> {
 		for (int leftIndex = 0; leftIndex < left.size(); leftIndex += 1) {
 			for (int rightIndex = 0; rightIndex < right.size(); rightIndex += 1) {
 				if (comparator.test(left.get(leftIndex), right.get(rightIndex))) {
-					this.lcsLengths[leftIndex][rightIndex] = getLcsLength(leftIndex - 1, rightIndex - 1) + 1;
+					this.lcsLengths[leftIndex][rightIndex] = getMaximalLength(leftIndex - 1, rightIndex - 1) + 1;
 				} else {
 					this.lcsLengths[leftIndex][rightIndex] = Integer
-						.max(getLcsLength(leftIndex - 1, rightIndex), getLcsLength(leftIndex, rightIndex - 1));
+						.max(getMaximalLength(leftIndex - 1, rightIndex), getMaximalLength(leftIndex, rightIndex - 1));
 				}
 			}
 		}
 	}
 
-	private int getLcsLength(int i, int j) {
+	/**
+	 * Returns maximal length of largest sequence.
+	 *
+	 * @param i
+	 *            left index
+	 * @param j
+	 *            right index
+	 * @return maximal length
+	 */
+	private int getMaximalLength(final int i, final int j) {
 		if (i < 0 || j < 0) {
 			return 0;
 		}

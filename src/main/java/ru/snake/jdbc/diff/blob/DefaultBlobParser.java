@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultBlobParser implements BlobParser {
+public final class DefaultBlobParser implements BlobParser {
 
 	private static final int MAX_LENGTH = 128;
 
@@ -14,7 +14,7 @@ public class DefaultBlobParser implements BlobParser {
 	private static final int CELL_LENGTH = 4;
 
 	@Override
-	public Object parse(byte[] blob) {
+	public Object parse(final byte[] blob) {
 		Map<String, Object> object = new LinkedHashMap<>();
 		List<String> data = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();

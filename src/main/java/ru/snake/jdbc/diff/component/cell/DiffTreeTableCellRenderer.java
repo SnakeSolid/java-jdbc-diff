@@ -10,13 +10,19 @@ import javax.swing.tree.TreeModel;
 
 import ru.snake.jdbc.diff.component.DiffTreeTable;
 
-public class DiffTreeTableCellRenderer extends JTree implements TableCellRenderer {
+/**
+ * Cell renderer for tree cells. This renderer recalculete cellbounds and..
+ *
+ * @author snake
+ *
+ */
+public final class DiffTreeTableCellRenderer extends JTree implements TableCellRenderer {
 
-	protected int visibleRow;
+	private int visibleRow;
 
 	private DiffTreeTable treeTable;
 
-	public DiffTreeTableCellRenderer(DiffTreeTable treeTable, TreeModel model) {
+	public DiffTreeTableCellRenderer(final DiffTreeTable treeTable, final TreeModel model) {
 		super(model);
 
 		this.treeTable = treeTable;
@@ -24,7 +30,7 @@ public class DiffTreeTableCellRenderer extends JTree implements TableCellRendere
 		setRowHeight(getRowHeight());
 	}
 
-	public void setRowHeight(int rowHeight) {
+	public void setRowHeight(final int rowHeight) {
 		if (rowHeight > 0) {
 			super.setRowHeight(rowHeight);
 
@@ -34,23 +40,23 @@ public class DiffTreeTableCellRenderer extends JTree implements TableCellRendere
 		}
 	}
 
-	public void setBounds(int x, int y, int w, int h) {
+	public void setBounds(final int x, final int y, final int w, final int h) {
 		super.setBounds(x, 0, w, treeTable.getHeight());
 	}
 
-	public void paint(Graphics g) {
+	public void paint(final Graphics g) {
 		g.translate(0, -visibleRow * getRowHeight());
 
 		super.paint(g);
 	}
 
 	public Component getTableCellRendererComponent(
-		JTable table,
-		Object value,
-		boolean isSelected,
-		boolean hasFocus,
-		int row,
-		int column
+		final JTable table,
+		final Object value,
+		final boolean isSelected,
+		final boolean hasFocus,
+		final int row,
+		final int column
 	) {
 		if (isSelected) {
 			setForeground(table.getForeground());
@@ -64,4 +70,5 @@ public class DiffTreeTableCellRenderer extends JTree implements TableCellRendere
 
 		return this;
 	}
+
 }

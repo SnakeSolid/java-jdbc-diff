@@ -12,7 +12,13 @@ import javax.swing.table.TableCellRenderer;
 
 import ru.snake.jdbc.diff.model.DataCell;
 
-public class DataCellRenderer extends JLabel implements TableCellRenderer {
+/**
+ * Cell renderer for data table.
+ *
+ * @author snake
+ *
+ */
+public final class DataCellRenderer extends JLabel implements TableCellRenderer {
 
 	private final Color backgroundColor;
 
@@ -30,12 +36,12 @@ public class DataCellRenderer extends JLabel implements TableCellRenderer {
 
 	@Override
 	public Component getTableCellRendererComponent(
-		JTable table,
-		Object value,
-		boolean isSelected,
-		boolean hasFocus,
-		int row,
-		int column
+		final JTable table,
+		final Object value,
+		final boolean isSelected,
+		final boolean hasFocus,
+		final int row,
+		final int column
 	) {
 		DataCell cell = (DataCell) value;
 		String textValue = cell.getValue();

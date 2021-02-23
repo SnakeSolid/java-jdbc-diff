@@ -7,7 +7,15 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiPredicate;
 
-public class DiffObject {
+/**
+ * Compares two java objects with known structure. Objects must contain
+ * hierarchy as nested {@link Map} and {@link List}. All other values will be
+ * compared using given {@link BiPredicate}.
+ *
+ * @author snake
+ *
+ */
+public final class DiffObject {
 
 	private final Object left;
 
@@ -15,34 +23,62 @@ public class DiffObject {
 
 	private final BiPredicate<Object, Object> comparator;
 
+	/**
+	 * Creates new difference calculator for given objects.
+	 *
+	 * @param left
+	 *            left object
+	 * @param right
+	 *            right object
+	 * @param comparator
+	 *            object comparator
+	 */
 	public DiffObject(final Object left, final Object right, final BiPredicate<Object, Object> comparator) {
 		this.left = left;
 		this.right = right;
 		this.comparator = comparator;
 	}
 
+	/**
+	 * Calculate difference between two objects. Returns object with mixed
+	 * structure from both source objects all map values, list items and objects
+	 * will be replaced with instance {@link DiffObjectItem}.
+	 *
+	 * @return comparison result
+	 */
 	public Object diff() {
-		return diffRecursive(left, right, comparator);
+		return diffRecursive(left, right);
 	}
 
-	public static Object
-			diffRecursive(final Object left, final Object right, final BiPredicate<Object, Object> comparator) {
-		if (left == null && right == null) {
+	/**
+	 * Compares two objects testing class for both object. If both objects are
+	 * {@link Map} then they will be compared using map keys. If both objects
+	 * are {@link List} then they will be compared using {@link DiffList}. Other
+	 * wise objects will be compared using given comparator.
+	 *
+	 * @param aLeft
+	 *            left object
+	 * @param aRight
+	 *            right object
+	 * @return difference between objects
+	 */
+	private Object diffRecursive(final Object aLeft, final Object aRight) {
+		if (aLeft == null && aRight == null) {
 			return DiffObjectItem.both(null);
-		} else if (left == null) {
-			return DiffObjectItem.right(right);
-		} else if (right == null) {
-			return DiffObjectItem.left(left);
+		} else if (aLeft == null) {
+			return DiffObjectItem.right(aRight);
+		} else if (aRight == null) {
+			return DiffObjectItem.left(aLeft);
 		}
 
-		Class<? extends Object> leftClass = left.getClass();
-		Class<? extends Object> rightClass = right.getClass();
+		Class<? extends Object> leftClass = aLeft.getClass();
+		Class<? extends Object> rightClass = aRight.getClass();
 
 		if (Map.class.isAssignableFrom(leftClass) && Map.class.isAssignableFrom(rightClass)) {
 			@SuppressWarnings("unchecked")
-			Map<Object, Object> leftMap = (Map<Object, Object>) left;
+			Map<Object, Object> leftMap = (Map<Object, Object>) aLeft;
 			@SuppressWarnings("unchecked")
-			Map<Object, Object> rightMap = (Map<Object, Object>) right;
+			Map<Object, Object> rightMap = (Map<Object, Object>) aRight;
 			Map<Object, Object> resultMap = new LinkedHashMap<>();
 
 			for (Entry<Object, Object> leftEntry : leftMap.entrySet()) {
@@ -55,7 +91,7 @@ public class DiffObject {
 					if (comparator.test(leftValue, rightValue)) {
 						resultMap.put(leftKey, DiffObjectItem.both(leftValue));
 					} else {
-						resultMap.put(leftKey, diffRecursive(leftValue, rightValue, comparator));
+						resultMap.put(leftKey, diffRecursive(leftValue, rightValue));
 					}
 				} else {
 					resultMap.put(leftKey, DiffObjectItem.left(leftValue));
@@ -74,9 +110,9 @@ public class DiffObject {
 			return resultMap;
 		} else if (List.class.isAssignableFrom(leftClass) && List.class.isAssignableFrom(rightClass)) {
 			@SuppressWarnings("unchecked")
-			List<Object> leftList = (List<Object>) left;
+			List<Object> leftList = (List<Object>) aLeft;
 			@SuppressWarnings("unchecked")
-			List<Object> rightList = (List<Object>) right;
+			List<Object> rightList = (List<Object>) aRight;
 			List<DiffListItem<Object>> diffList = new DiffList<Object>(leftList, rightList, comparator).diff();
 			List<Object> resultList = new ArrayList<>();
 
@@ -97,7 +133,7 @@ public class DiffObject {
 					break;
 
 				case UPDATE:
-					resultList.add(diffRecursive(diffItem.getLeft(), diffItem.getRight(), comparator));
+					resultList.add(diffRecursive(diffItem.getLeft(), diffItem.getRight()));
 					break;
 
 				default:
@@ -106,10 +142,10 @@ public class DiffObject {
 			}
 
 			return resultList;
-		} else if (comparator.test(left, right)) {
-			return DiffObjectItem.both(left);
+		} else if (comparator.test(aLeft, aRight)) {
+			return DiffObjectItem.both(aLeft);
 		} else {
-			return DiffObjectItem.update(left, right);
+			return DiffObjectItem.update(aLeft, aRight);
 		}
 	}
 

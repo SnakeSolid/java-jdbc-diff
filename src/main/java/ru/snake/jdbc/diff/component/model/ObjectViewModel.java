@@ -2,37 +2,93 @@ package ru.snake.jdbc.diff.component.model;
 
 import ru.snake.jdbc.diff.component.node.ObjectNode;
 
-public class ObjectViewModel extends DiffAbstractTreeTableModel {
+/**
+ * Object view tree table model.
+ *
+ * @author snake
+ *
+ */
+public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 
 	static protected String[] columnNames = { "Name", "Value" };
 
 	static protected Class<?>[] columnTypes = { DiffTreeTableModel.class, String.class };
 
-	public ObjectViewModel(ObjectNode rootNode) {
+	/**
+	 * Creates new view tree table model.
+	 *
+	 * @param rootNode
+	 *            model root
+	 */
+	public ObjectViewModel(final ObjectNode rootNode) {
 		super(rootNode);
 	}
 
-	public Object getChild(Object parent, int index) {
+	/**
+	 * Returns child node for given parent.
+	 *
+	 * @param parent
+	 *            parent node
+	 * @param index
+	 *            child index
+	 * @return child node
+	 */
+	public Object getChild(final Object parent, final int index) {
 		return ((ObjectNode) parent).getChildren().get(index);
 	}
 
-	public int getChildCount(Object parent) {
+	/**
+	 * Returns number of child nodes for given parent.
+	 *
+	 * @param parent
+	 *            parent node
+	 * @return number of child nodes
+	 */
+	public int getChildCount(final Object parent) {
 		return ((ObjectNode) parent).getChildren().size();
 	}
 
+	/**
+	 * Return column count for different model.
+	 *
+	 * @return column count
+	 */
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
-	public String getColumnName(int column) {
+	/**
+	 * Returns column name by column index.
+	 *
+	 * @param column
+	 *            column index
+	 * @return column name
+	 */
+	public String getColumnName(final int column) {
 		return columnNames[column];
 	}
 
-	public Class<?> getColumnClass(int column) {
+	/**
+	 * Returns column class by column index.
+	 *
+	 * @param column
+	 *            column index
+	 * @return column class
+	 */
+	public Class<?> getColumnClass(final int column) {
 		return columnTypes[column];
 	}
 
-	public Object getValueAt(Object node, int column) {
+	/**
+	 * Return cell value for given column name by tree node.
+	 *
+	 * @param node
+	 *            node
+	 * @param column
+	 *            column index
+	 * @return cell value
+	 */
+	public Object getValueAt(final Object node, final int column) {
 		switch (column) {
 		case 0:
 			return ((ObjectNode) node).getName();
@@ -47,11 +103,30 @@ public class ObjectViewModel extends DiffAbstractTreeTableModel {
 		return null;
 	}
 
-	public boolean isCellEditable(Object node, int column) {
+	/**
+	 * Return true if given cell editable.
+	 *
+	 * @param node
+	 *            node
+	 * @param column
+	 *            column index
+	 * @return true if cell editable
+	 */
+	public boolean isCellEditable(final Object node, final int column) {
 		return column == 0;
 	}
 
-	public void setValueAt(Object aValue, Object node, int column) {
+	/**
+	 * Set given cell value.
+	 *
+	 * @param aValue
+	 *            new value
+	 * @param node
+	 *            node
+	 * @param column
+	 *            column index
+	 */
+	public void setValueAt(final Object aValue, final Object node, final int column) {
 	}
 
 }

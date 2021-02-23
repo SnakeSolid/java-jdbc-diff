@@ -6,57 +6,78 @@ import javax.swing.event.TreeExpansionListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.tree.TreePath;
 
-public class DiffTreeTableModelAdapter extends AbstractTableModel {
+/**
+ * Adapter {@link JTree} model. Dispatch events from tree to table model.
+ *
+ * @author snake
+ *
+ */
+public final class DiffTreeTableModelAdapter extends AbstractTableModel {
 
-	JTree tree;
-	DiffAbstractTreeTableModel treeTableModel;
+	private final JTree tree;
 
-	public DiffTreeTableModelAdapter(DiffAbstractTreeTableModel treeTableModel, JTree tree) {
+	private final DiffAbstractTreeTableModel treeTableModel;
+
+	public DiffTreeTableModelAdapter(final DiffAbstractTreeTableModel treeTableModel, final JTree tree) {
 		this.tree = tree;
 		this.treeTableModel = treeTableModel;
 
 		tree.addTreeExpansionListener(new TreeExpansionListener() {
-			public void treeExpanded(TreeExpansionEvent event) {
+			public void treeExpanded(final TreeExpansionEvent event) {
 				fireTableDataChanged();
 			}
 
-			public void treeCollapsed(TreeExpansionEvent event) {
+			public void treeCollapsed(final TreeExpansionEvent event) {
 				fireTableDataChanged();
 			}
 		});
 	}
 
+	@Override
 	public int getColumnCount() {
 		return treeTableModel.getColumnCount();
 	}
 
-	public String getColumnName(int column) {
+	@Override
+	public String getColumnName(final int column) {
 		return treeTableModel.getColumnName(column);
 	}
 
-	public Class<?> getColumnClass(int column) {
+	@Override
+	public Class<?> getColumnClass(final int column) {
 		return treeTableModel.getColumnClass(column);
 	}
 
+	@Override
 	public int getRowCount() {
 		return tree.getRowCount();
 	}
 
-	protected Object nodeForRow(int row) {
+	/**
+	 * Returns tree node for given row index.
+	 *
+	 * @param row
+	 *            row index
+	 * @return tree node
+	 */
+	protected Object nodeForRow(final int row) {
 		TreePath treePath = tree.getPathForRow(row);
 
 		return treePath.getLastPathComponent();
 	}
 
-	public Object getValueAt(int row, int column) {
+	@Override
+	public Object getValueAt(final int row, final int column) {
 		return treeTableModel.getValueAt(nodeForRow(row), column);
 	}
 
-	public boolean isCellEditable(int row, int column) {
+	@Override
+	public boolean isCellEditable(final int row, final int column) {
 		return treeTableModel.isCellEditable(nodeForRow(row), column);
 	}
 
-	public void setValueAt(Object value, int row, int column) {
+	@Override
+	public void setValueAt(final Object value, final int row, final int column) {
 		treeTableModel.setValueAt(value, nodeForRow(row), column);
 	}
 }

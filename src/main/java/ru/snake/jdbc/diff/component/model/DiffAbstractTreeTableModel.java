@@ -5,6 +5,12 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreePath;
 
+/**
+ * Base model class for tree tables.
+ *
+ * @author snake
+ *
+ */
 public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 
 	private static final int CHANGED = 0;
@@ -19,34 +25,80 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 
 	protected final EventListenerList listenerList = new EventListenerList();
 
-	public DiffAbstractTreeTableModel(Object root) {
+	/**
+	 * Creates new model for given root node.
+	 *
+	 * @param root
+	 *            root node
+	 */
+	public DiffAbstractTreeTableModel(final Object root) {
 		this.root = root;
 	}
 
+	/**
+	 * Returns model root.
+	 *
+	 * @return root node
+	 */
 	public Object getRoot() {
 		return root;
 	}
 
-	public boolean isLeaf(Object node) {
+	/**
+	 * Check that given node is leaf node.
+	 *
+	 * @return true if node is leaf
+	 */
+	public boolean isLeaf(final Object node) {
 		return getChildCount(node) == 0;
 	}
 
-	public void valueForPathChanged(TreePath path, Object newValue) {
+	/**
+	 * Dummy method for changing tree path.
+	 */
+	public void valueForPathChanged(final TreePath path, final Object newValue) {
 	}
 
-	public int getIndexOfChild(Object parent, Object child) {
+	/**
+	 * Returns index of child node in parent.
+	 *
+	 * @param parent
+	 *            parent node
+	 * @param child
+	 *            child node
+	 * @return index of child node in parent
+	 */
+	public int getIndexOfChild(final Object parent, final Object child) {
 		return 0;
 	}
 
-	public void addTreeModelListener(TreeModelListener listener) {
+	/**
+	 * Add new {@link TreeModelListener} to this model.
+	 *
+	 * @param listener
+	 *            listener
+	 */
+	public void addTreeModelListener(final TreeModelListener listener) {
 		listenerList.add(TreeModelListener.class, listener);
 	}
 
-	public void removeTreeModelListener(TreeModelListener listener) {
+	/**
+	 * Remove existing {@link TreeModelListener} from this model.
+	 *
+	 * @param listener
+	 *            listener
+	 */
+	public void removeTreeModelListener(final TreeModelListener listener) {
 		listenerList.remove(TreeModelListener.class, listener);
 	}
 
-	private void fireTreeNode(int changeType, Object source, Object[] path, int[] childIndices, Object[] children) {
+	private void fireTreeNode(
+		final int changeType,
+		final Object source,
+		final Object[] path,
+		final int[] childIndices,
+		final Object[] children
+	) {
 		TreeModelEvent e = new TreeModelEvent(source, path, childIndices, children);
 		Object[] listeners = listenerList.getListenerList();
 
@@ -76,19 +128,87 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 		}
 	}
 
-	protected void fireTreeNodesChanged(Object source, Object[] path, int[] childIndices, Object[] children) {
+	/**
+	 * Fires node changed event to all listeners.
+	 *
+	 * @param source
+	 *            event source
+	 * @param path
+	 *            tree path
+	 * @param childIndices
+	 *            child indexes
+	 * @param children
+	 *            children nodes
+	 */
+	protected void fireTreeNodesChanged(
+		final Object source,
+		final Object[] path,
+		final int[] childIndices,
+		final Object[] children
+	) {
 		fireTreeNode(CHANGED, source, path, childIndices, children);
 	}
 
-	protected void fireTreeNodesInserted(Object source, Object[] path, int[] childIndices, Object[] children) {
+	/**
+	 * Fires node inserted event to all listeners.
+	 *
+	 * @param source
+	 *            event source
+	 * @param path
+	 *            tree path
+	 * @param childIndices
+	 *            child indexes
+	 * @param children
+	 *            children nodes
+	 */
+	protected void fireTreeNodesInserted(
+		final Object source,
+		final Object[] path,
+		final int[] childIndices,
+		final Object[] children
+	) {
 		fireTreeNode(INSERTED, source, path, childIndices, children);
 	}
 
-	protected void fireTreeNodesRemoved(Object source, Object[] path, int[] childIndices, Object[] children) {
+	/**
+	 * Fires node removed event to all listeners.
+	 *
+	 * @param source
+	 *            event source
+	 * @param path
+	 *            tree path
+	 * @param childIndices
+	 *            child indexes
+	 * @param children
+	 *            children nodes
+	 */
+	protected void fireTreeNodesRemoved(
+		final Object source,
+		final Object[] path,
+		final int[] childIndices,
+		final Object[] children
+	) {
 		fireTreeNode(REMOVED, source, path, childIndices, children);
 	}
 
-	protected void fireTreeStructureChanged(Object source, Object[] path, int[] childIndices, Object[] children) {
+	/**
+	 * Fires tree structure event to all listeners.
+	 *
+	 * @param source
+	 *            event source
+	 * @param path
+	 *            tree path
+	 * @param childIndices
+	 *            child indexes
+	 * @param children
+	 *            children nodes
+	 */
+	protected void fireTreeStructureChanged(
+		final Object source,
+		final Object[] path,
+		final int[] childIndices,
+		final Object[] children
+	) {
 		fireTreeNode(STRUCTURE_CHANGED, source, path, childIndices, children);
 	}
 

@@ -13,15 +13,18 @@ import ru.snake.jdbc.diff.MainFrame;
 import ru.snake.jdbc.diff.component.node.DiffString;
 import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 
-public class DiffStringCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+/**
+ * Cell editor for difference table. This editor will show
+ * {@link ObjectViewDialog} for selected value in table.
+ *
+ * @author snake
+ *
+ */
+public final class DiffStringCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 
 	private final MainFrame mainFrame;
 
 	private final JButton button;
-
-	private int row;
-
-	private int column;
 
 	private Object currentValue;
 
@@ -37,7 +40,7 @@ public class DiffStringCellEditor extends AbstractCellEditor implements TableCel
 		this.button.setOpaque(true);
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		Object source = e.getSource();
 
 		if (source == button) {
@@ -56,10 +59,14 @@ public class DiffStringCellEditor extends AbstractCellEditor implements TableCel
 		return currentValue;
 	}
 
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+	public Component getTableCellEditorComponent(
+		final JTable table,
+		final Object value,
+		final boolean isSelected,
+		final int row,
+		final int column
+	) {
 		this.currentValue = value;
-		this.row = row;
-		this.column = column;
 
 		return button;
 	}
