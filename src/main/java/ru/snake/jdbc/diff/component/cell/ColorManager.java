@@ -14,6 +14,12 @@ public class ColorManager {
 
 	private static final Color EMPTY_COLOR = new Color(0x00cccccc);
 
+	private static final Color EDIT_COLOR = new Color(0x00aaaaaa);
+
+	public static Color getEditColor() {
+		return EDIT_COLOR;
+	}
+
 	public static Color getForegroundColor(CellState state) {
 		switch (state) {
 		case VALID:

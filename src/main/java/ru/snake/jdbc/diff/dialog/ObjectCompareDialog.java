@@ -54,7 +54,7 @@ public class ObjectCompareDialog extends JDialog {
 		DiffAbstractTreeTableModel treeTableModel = new DiffDataModel(null);
 		diffTree = new DiffTreeTable(treeTableModel);
 		diffTree.setDefaultRenderer(DiffString.class, new DiffStringCellRenderer());
-		diffTree.setDefaultEditor(DiffString.class, new DiffStringCellEditor(mainFrame, treeTableModel));
+		diffTree.setDefaultEditor(DiffString.class, new DiffStringCellEditor(mainFrame));
 
 		JScrollPane diffScroll = new JScrollPane(
 			this.diffTree,

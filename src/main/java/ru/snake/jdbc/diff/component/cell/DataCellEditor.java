@@ -42,9 +42,11 @@ public class DataCellEditor extends AbstractCellEditor implements TableCellEdito
 		this.right = right;
 		this.button = new JButton();
 		this.button.addActionListener(this);
+		this.button.setBackground(ColorManager.getEditColor());
 		this.button.setBorderPainted(false);
-		this.button.setFocusPainted(false);
 		this.button.setContentAreaFilled(false);
+		this.button.setFocusPainted(false);
+		this.button.setOpaque(true);
 	}
 
 	public void actionPerformed(ActionEvent e) {

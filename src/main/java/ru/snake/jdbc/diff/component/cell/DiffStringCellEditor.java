@@ -10,15 +10,12 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
 import ru.snake.jdbc.diff.MainFrame;
-import ru.snake.jdbc.diff.component.model.DiffAbstractTreeTableModel;
 import ru.snake.jdbc.diff.component.node.DiffString;
 import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 
 public class DiffStringCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
 
 	private final MainFrame mainFrame;
-
-	private final DiffAbstractTreeTableModel treeTableModel;
 
 	private final JButton button;
 
@@ -28,15 +25,16 @@ public class DiffStringCellEditor extends AbstractCellEditor implements TableCel
 
 	private Object currentValue;
 
-	public DiffStringCellEditor(final MainFrame mainFrame, final DiffAbstractTreeTableModel treeTableModel) {
+	public DiffStringCellEditor(final MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
-		this.treeTableModel = treeTableModel;
 
 		this.button = new JButton();
 		this.button.addActionListener(this);
+		this.button.setBackground(ColorManager.getEditColor());
 		this.button.setBorderPainted(false);
-		this.button.setFocusPainted(false);
 		this.button.setContentAreaFilled(false);
+		this.button.setFocusPainted(false);
+		this.button.setOpaque(true);
 	}
 
 	public void actionPerformed(ActionEvent e) {
