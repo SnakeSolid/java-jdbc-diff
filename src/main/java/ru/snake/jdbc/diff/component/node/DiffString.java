@@ -1,6 +1,13 @@
 package ru.snake.jdbc.diff.component.node;
 
-public class DiffString {
+/**
+ * Object contains string representation of difference, source object and actual
+ * difference type as {@link DiffState}.
+ *
+ * @author snake
+ *
+ */
+public final class DiffString {
 
 	private final DiffState state;
 

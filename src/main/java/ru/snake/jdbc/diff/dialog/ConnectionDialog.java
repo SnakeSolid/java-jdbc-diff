@@ -226,8 +226,10 @@ public final class ConnectionDialog extends JDialog implements ActionListener {
 	 *            driver parameters model
 	 * @return new change listener
 	 */
-	private ChangeParametersTableListener
-			makeParametersListener(DriverListModel driverListModel, ConnectionParametersTableModel parametersModel) {
+	private ChangeParametersTableListener makeParametersListener(
+		final DriverListModel driverListModel,
+		final ConnectionParametersTableModel parametersModel
+	) {
 		ChangeParametersTableListener parametersTableListener = new ChangeParametersTableListener(
 			config,
 			driverListModel,
@@ -260,7 +262,7 @@ public final class ConnectionDialog extends JDialog implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(final ActionEvent e) {
 		Object source = e.getSource();
 
 		if (source == saveButton) {
@@ -281,9 +283,9 @@ public final class ConnectionDialog extends JDialog implements ActionListener {
 	}
 
 	private ConnectionSettings buildConnectionSettings(
-		DriverListModel driverListModel,
-		ParserListModel blobMappesModel,
-		ConnectionParametersTableModel parametersModel
+		final DriverListModel driverListModel,
+		final ParserListModel blobMappesModel,
+		final ConnectionParametersTableModel parametersModel
 	) {
 		String driverString = String.valueOf(driverListModel.getSelectedItem());
 		String parserString = String.valueOf(blobMappesModel.getSelectedItem());

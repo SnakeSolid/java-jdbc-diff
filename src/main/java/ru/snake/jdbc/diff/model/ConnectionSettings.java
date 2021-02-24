@@ -32,10 +32,12 @@ public final class ConnectionSettings {
 	 *            driver class name
 	 * @param binaryTypes
 	 *            binary type names
+	 * @param parserLibrary
+	 *            BLOB parser library
+	 * @param parserClass
+	 *            BLOB parser factory class
 	 * @param url
 	 *            connection URL
-	 * @param url
-	 * @param parserClass
 	 */
 	public ConnectionSettings(
 		final String driverPath,

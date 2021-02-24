@@ -26,7 +26,17 @@ import ru.snake.jdbc.diff.component.model.DiffDataModel;
 import ru.snake.jdbc.diff.component.model.ObjectViewModel;
 import ru.snake.jdbc.diff.component.node.ObjectNode;
 
+/**
+ * Show object dialog. Show given object as tree table.
+ *
+ * @author snake
+ *
+ */
 public class ObjectViewDialog extends JDialog {
+
+	private static final int DEFAULT_HEIGHT = 480;
+
+	private static final int DEFAULT_WIDTH = 480;
 
 	private DiffTreeTable diffTree;
 
@@ -38,7 +48,7 @@ public class ObjectViewDialog extends JDialog {
 
 		initializeComponents();
 
-		setPreferredSize(new Dimension(480, 480));
+		setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 		pack();
 		setLocationRelativeTo(mainFrame);
 	}
@@ -71,17 +81,39 @@ public class ObjectViewDialog extends JDialog {
 		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(diffScroll).addComponent(buttonClose));
 	}
 
-	public void setViewObject(Object object) {
+	/**
+	 * Convert given object to tree model and set model as tree table model.
+	 *
+	 * @param object
+	 *            object
+	 */
+	public void setViewObject(final Object object) {
 		ObjectNode root = buildObjectNode(object);
 		DiffAbstractTreeTableModel model = new ObjectViewModel(root);
 		diffTree.setDiffTreeTableModel(model);
 	}
 
-	private static ObjectNode buildObjectNode(Object object) {
+	/**
+	 * Convert given object to {@link ObjectNode}.
+	 *
+	 * @param object
+	 *            object
+	 * @return object node
+	 */
+	private static ObjectNode buildObjectNode(final Object object) {
 		return buildObjectNodeRecursive("", object);
 	}
 
-	private static ObjectNode buildObjectNodeRecursive(String name, Object object) {
+	/**
+	 * Recursively convert given object to {@link ObjectNode}.
+	 *
+	 * @param name
+	 *            node name
+	 * @param object
+	 *            object
+	 * @return object node
+	 */
+	private static ObjectNode buildObjectNodeRecursive(final String name, final Object object) {
 		if (object == null) {
 			return new ObjectNode(name, null, Collections.emptyList());
 		}

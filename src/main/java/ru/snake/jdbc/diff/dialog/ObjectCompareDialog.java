@@ -32,7 +32,17 @@ import ru.snake.jdbc.diff.component.node.DiffDataNode;
 import ru.snake.jdbc.diff.component.node.DiffState;
 import ru.snake.jdbc.diff.component.node.DiffString;
 
+/**
+ * Compare objects dialog. Show difference between two objects.
+ *
+ * @author snake
+ *
+ */
 public class ObjectCompareDialog extends JDialog {
+
+	private static final int DEFAULT_HEIGHT = 640;
+
+	private static final int DEFAULT_WIDTH = 640;
 
 	private final MainFrame mainFrame;
 
@@ -45,7 +55,7 @@ public class ObjectCompareDialog extends JDialog {
 
 		initializeComponents();
 
-		setPreferredSize(new Dimension(640, 640));
+		setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 		pack();
 		setLocationRelativeTo(mainFrame);
 	}
@@ -80,18 +90,26 @@ public class ObjectCompareDialog extends JDialog {
 		layout.setVerticalGroup(layout.createSequentialGroup().addComponent(diffScroll).addComponent(buttonClose));
 	}
 
-	public void compareObjects(Object left, Object right) {
+	/**
+	 * Compare two objects and set result as dialog model.
+	 *
+	 * @param left
+	 *            left object
+	 * @param right
+	 *            right object
+	 */
+	public void compareObjects(final Object left, final Object right) {
 		Object objectDiff = new DiffObject(left, right, Object::equals).diff();
 		DiffDataNode root = buildDataNode(objectDiff);
 		DiffAbstractTreeTableModel model = new DiffDataModel(root);
 		diffTree.setDiffTreeTableModel(model);
 	}
 
-	private static DiffDataNode buildDataNode(Object object) {
+	private static DiffDataNode buildDataNode(final Object object) {
 		return buildDataNodeRecursive("", object);
 	}
 
-	private static DiffDataNode buildDataNodeRecursive(String name, Object object) {
+	private static DiffDataNode buildDataNodeRecursive(final String name, final Object object) {
 		Class<?> clazz = object.getClass();
 
 		if (DiffObjectItem.class.isAssignableFrom(clazz)) {
@@ -137,8 +155,28 @@ public class ObjectCompareDialog extends JDialog {
 		}
 	}
 
-	private static DiffDataNode
-			buildNode(String name, DiffType type, Object left, Object right, List<DiffDataNode> chilren) {
+	/**
+	 * Build difference node using given left and right values.
+	 *
+	 * @param name
+	 *            node name
+	 * @param type
+	 *            difference type
+	 * @param left
+	 *            left value
+	 * @param right
+	 *            right value
+	 * @param chilren
+	 *            children nodes
+	 * @return difference node
+	 */
+	private static DiffDataNode buildNode(
+		final String name,
+		final DiffType type,
+		final Object left,
+		final Object right,
+		final List<DiffDataNode> chilren
+	) {
 		String leftString = buildString(left);
 		String rightString = buildString(right);
 
@@ -180,7 +218,14 @@ public class ObjectCompareDialog extends JDialog {
 		}
 	}
 
-	private static String buildString(Object value) {
+	/**
+	 * Build string value from object. If object is null returns empty string.
+	 *
+	 * @param value
+	 *            object
+	 * @return string value
+	 */
+	private static String buildString(final Object value) {
 		if (value == null) {
 			return "";
 		} else {

@@ -1,5 +1,11 @@
 package ru.snake.jdbc.diff.component.node;
 
+/**
+ * State of {@link DiffString}.
+ *
+ * @author snake
+ *
+ */
 public enum DiffState {
 
 	/**

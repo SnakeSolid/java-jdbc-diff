@@ -9,7 +9,7 @@ public interface DiffTreeTableModel extends TreeModel {
 	 *
 	 * @return Number of Columns
 	 */
-	public int getColumnCount();
+	int getColumnCount();
 
 	/**
 	 * Returns the column name.
@@ -18,7 +18,7 @@ public interface DiffTreeTableModel extends TreeModel {
 	 *            Column number
 	 * @return Column name
 	 */
-	public String getColumnName(int column);
+	String getColumnName(int column);
 
 	/**
 	 * Returns the type (class) of a column.
@@ -27,7 +27,7 @@ public interface DiffTreeTableModel extends TreeModel {
 	 *            Column number
 	 * @return Class
 	 */
-	public Class<?> getColumnClass(int column);
+	Class<?> getColumnClass(int column);
 
 	/**
 	 * Returns the value of a node in a column.
@@ -38,7 +38,7 @@ public interface DiffTreeTableModel extends TreeModel {
 	 *            Column number
 	 * @return Value of the node in the column
 	 */
-	public Object getValueAt(Object node, int column);
+	Object getValueAt(Object node, int column);
 
 	/**
 	 * Check if a cell of a node in one column is editable.
@@ -49,7 +49,7 @@ public interface DiffTreeTableModel extends TreeModel {
 	 *            Column number
 	 * @return true/false
 	 */
-	public boolean isCellEditable(Object node, int column);
+	boolean isCellEditable(Object node, int column);
 
 	/**
 	 * Sets a value for a node in one column.
@@ -61,6 +61,6 @@ public interface DiffTreeTableModel extends TreeModel {
 	 * @param column
 	 *            Column number
 	 */
-	public void setValueAt(Object aValue, Object node, int column);
+	void setValueAt(Object aValue, Object node, int column);
 
 }

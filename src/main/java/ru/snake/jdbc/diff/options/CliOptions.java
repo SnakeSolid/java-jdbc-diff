@@ -8,7 +8,7 @@ import java.io.File;
  * @author snake
  *
  */
-public class CliOptions {
+public final class CliOptions {
 
 	private final File configFile;
 

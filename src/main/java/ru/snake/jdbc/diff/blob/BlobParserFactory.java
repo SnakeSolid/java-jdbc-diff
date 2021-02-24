@@ -20,6 +20,6 @@ public interface BlobParserFactory {
 	 *            column type
 	 * @return BLOB parser
 	 */
-	public BlobParser getParser(String tableName, String columnName, String columnType);
+	BlobParser getParser(String tableName, String columnName, String columnType);
 
 }

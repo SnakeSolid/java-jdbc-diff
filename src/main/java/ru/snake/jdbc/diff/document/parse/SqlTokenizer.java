@@ -12,7 +12,7 @@ import java.util.Set;
  * @author snake
  *
  */
-public class SqlTokenizer {
+public final class SqlTokenizer {
 
 	private static final char ZERO = '\0';
 

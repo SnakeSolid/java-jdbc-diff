@@ -2,7 +2,13 @@ package ru.snake.jdbc.diff.component.node;
 
 import java.util.List;
 
-public class ObjectNode {
+/**
+ * Single object view node. Contains field name and value pair.
+ *
+ * @author snake
+ *
+ */
+public final class ObjectNode {
 
 	private final String name;
 
@@ -10,6 +16,16 @@ public class ObjectNode {
 
 	private final List<ObjectNode> children;
 
+	/**
+	 * Create new object node.
+	 *
+	 * @param name
+	 *            name
+	 * @param value
+	 *            value
+	 * @param children
+	 *            children nodes
+	 */
 	public ObjectNode(final String name, final String value, final List<ObjectNode> children) {
 		this.name = name;
 		this.value = value;

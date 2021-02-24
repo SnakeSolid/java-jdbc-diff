@@ -8,7 +8,7 @@ import org.apache.commons.cli.ParseException;
  * @author snake
  *
  */
-public class CliOptionsParseException extends Exception {
+public final class CliOptionsParseException extends Exception {
 
 	private static final long serialVersionUID = 4700057869776053466L;
 
@@ -18,7 +18,7 @@ public class CliOptionsParseException extends Exception {
 	 * @param exception
 	 *            inner exception
 	 */
-	public CliOptionsParseException(ParseException exception) {
+	public CliOptionsParseException(final ParseException exception) {
 		super(exception);
 	}
 

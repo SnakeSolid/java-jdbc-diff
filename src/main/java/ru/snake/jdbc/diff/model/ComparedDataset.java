@@ -2,7 +2,13 @@ package ru.snake.jdbc.diff.model;
 
 import java.util.List;
 
-public class ComparedDataset {
+/**
+ * Container for data set name, left and right compared tables.
+ *
+ * @author snake
+ *
+ */
+public final class ComparedDataset {
 
 	private final String name;
 

@@ -1,6 +1,6 @@
 package ru.snake.jdbc.diff.model;
 
-public class DataCell {
+public final class DataCell {
 
 	private final CellState state;
 
@@ -18,7 +18,7 @@ public class DataCell {
 	 * @param object
 	 *            object value
 	 */
-	private DataCell(CellState state, String value, final Object object) {
+	private DataCell(final CellState state, final String value, final Object object) {
 		this.state = state;
 		this.value = value;
 		this.object = object;

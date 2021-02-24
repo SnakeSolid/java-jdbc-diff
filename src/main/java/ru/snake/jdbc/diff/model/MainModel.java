@@ -126,14 +126,14 @@ public class MainModel {
 	 * Set connection settings and fire connection changed event to all
 	 * listeners.
 	 *
-	 * @param leftConnection
+	 * @param aLeftConnection
 	 *            left connection
-	 * @param rightConnection
+	 * @param aRightConnection
 	 *            right connection
 	 */
-	public void setConnections(final ConnectionSettings leftConnection, final ConnectionSettings rightConnection) {
-		this.leftConnection = leftConnection;
-		this.rightConnection = rightConnection;
+	public void setConnections(final ConnectionSettings aLeftConnection, final ConnectionSettings aRightConnection) {
+		this.leftConnection = aLeftConnection;
+		this.rightConnection = aRightConnection;
 
 		fireConnectionChanged();
 	}

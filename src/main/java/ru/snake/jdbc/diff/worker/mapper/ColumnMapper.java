@@ -16,6 +16,6 @@ public interface ColumnMapper {
 	 * @throws SQLException
 	 *             if error occurred
 	 */
-	public TableCell map(ResultSet resultSet) throws SQLException;
+	TableCell map(ResultSet resultSet) throws SQLException;
 
 }

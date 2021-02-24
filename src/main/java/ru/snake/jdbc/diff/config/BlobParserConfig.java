@@ -1,13 +1,20 @@
 package ru.snake.jdbc.diff.config;
 
-public class BlobParserConfig {
+/**
+ * BLOB parser configuration settings. Contains parser library path and class
+ * name.
+ *
+ * @author snake
+ *
+ */
+public final class BlobParserConfig {
 
 	private String libraryPath;
 
 	private String parserClass;
 
 	/**
-	 * Create empty mapper settings.
+	 * Create empty parser settings.
 	 */
 	public BlobParserConfig() {
 		this.libraryPath = null;

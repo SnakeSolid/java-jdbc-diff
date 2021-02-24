@@ -23,7 +23,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 
 	protected final Object root;
 
-	protected final EventListenerList listenerList = new EventListenerList();
+	protected final EventListenerList listenerList;
 
 	/**
 	 * Creates new model for given root node.
@@ -33,6 +33,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	 */
 	public DiffAbstractTreeTableModel(final Object root) {
 		this.root = root;
+		this.listenerList = new EventListenerList();
 	}
 
 	/**
@@ -47,6 +48,8 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	/**
 	 * Check that given node is leaf node.
 	 *
+	 * @param node
+	 *            node to check
 	 * @return true if node is leaf
 	 */
 	public boolean isLeaf(final Object node) {
@@ -55,6 +58,11 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 
 	/**
 	 * Dummy method for changing tree path.
+	 *
+	 * @param path
+	 *            tree path
+	 * @param newValue
+	 *            new value
 	 */
 	public void valueForPathChanged(final TreePath path, final Object newValue) {
 	}

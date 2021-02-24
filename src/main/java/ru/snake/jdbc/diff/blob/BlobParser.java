@@ -17,6 +17,6 @@ public interface BlobParser {
 	 *            BLOB to parse
 	 * @return parsed object
 	 */
-	public Object parse(byte[] blob);
+	Object parse(byte[] blob);
 
 }

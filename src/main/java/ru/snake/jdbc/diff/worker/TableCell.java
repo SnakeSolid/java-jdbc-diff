@@ -1,6 +1,12 @@
 package ru.snake.jdbc.diff.worker;
 
-public class TableCell {
+/**
+ * Data table cell. Container for cell text and parser binary object.
+ *
+ * @author snake
+ *
+ */
+public final class TableCell {
 
 	private final String text;
 

@@ -14,6 +14,12 @@ import javax.swing.text.StyleContext;
 import ru.snake.jdbc.diff.document.parse.SqlTokenizer;
 import ru.snake.jdbc.diff.document.parse.Token;
 
+/**
+ * Text document with SQL syntax highlight.
+ *
+ * @author snake
+ *
+ */
 public final class SqlDocument extends DefaultStyledDocument implements Document {
 
 	private static final StyleContext STYLES = new StyleContext();

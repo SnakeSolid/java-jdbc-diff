@@ -6,12 +6,12 @@ import ru.snake.jdbc.diff.model.MainModel;
 public interface ComparedDatasetListener {
 
 	/**
-	 * Called if compared datasets in model was cleaned.
+	 * Called if compared data sets in model was cleaned.
 	 *
 	 * @param model
 	 *            calling model
 	 */
-	public void comparedDatasetsCleared(final MainModel model);
+	void comparedDatasetsCleared(MainModel model);
 
 	/**
 	 * Called if new compared dataset was added to model.
@@ -19,8 +19,8 @@ public interface ComparedDatasetListener {
 	 * @param model
 	 *            calling model
 	 * @param dataset
-	 *            pushed dataset
+	 *            pushed data set
 	 */
-	public void comparedDatasetPushed(final MainModel model, final ComparedDataset dataset);
+	void comparedDatasetPushed(MainModel model, ComparedDataset dataset);
 
 }

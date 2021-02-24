@@ -43,7 +43,7 @@ public final class QueryParser {
 	 *
 	 * @return query list
 	 */
-	public List<Query> parse() {
+	private List<Query> parse() {
 		while (!isEos()) {
 			Token token = tokens.get(position);
 

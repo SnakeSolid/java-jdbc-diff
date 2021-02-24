@@ -2,7 +2,13 @@ package ru.snake.jdbc.diff.component.node;
 
 import java.util.List;
 
-public class DiffDataNode {
+/**
+ * Represents single tree table node.
+ *
+ * @author snake
+ *
+ */
+public final class DiffDataNode {
 
 	private final String name;
 
@@ -12,7 +18,24 @@ public class DiffDataNode {
 
 	private final List<DiffDataNode> children;
 
-	public DiffDataNode(String name, DiffString left, DiffString right, List<DiffDataNode> children) {
+	/**
+	 * Creates new difference tree node.
+	 *
+	 * @param name
+	 *            node name
+	 * @param left
+	 *            left value
+	 * @param right
+	 *            right value
+	 * @param children
+	 *            children nodes
+	 */
+	public DiffDataNode(
+		final String name,
+		final DiffString left,
+		final DiffString right,
+		final List<DiffDataNode> children
+	) {
 		this.name = name;
 		this.left = left;
 		this.right = right;

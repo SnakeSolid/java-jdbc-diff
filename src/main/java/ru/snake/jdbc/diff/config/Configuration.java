@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public final class Configuration {
 
+	private static final int DEFAULT_SIMILARITY = 80;
+
 	private int rowSimilarity;
 
 	private FontConfig font;
@@ -23,7 +25,7 @@ public final class Configuration {
 	 * Create empty configuration instance.
 	 */
 	public Configuration() {
-		this.rowSimilarity = 80;
+		this.rowSimilarity = DEFAULT_SIMILARITY;
 		this.font = new FontConfig();
 		this.blobParsers = Collections.emptyMap();
 		this.drivers = Collections.emptyMap();
@@ -42,7 +44,7 @@ public final class Configuration {
 	 * @param similarity
 	 *            the similarity to set
 	 */
-	public void setSimilarity(int similarity) {
+	public void setSimilarity(final int similarity) {
 		this.rowSimilarity = similarity;
 	}
 

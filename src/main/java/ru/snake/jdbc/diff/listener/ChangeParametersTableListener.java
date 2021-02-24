@@ -10,6 +10,13 @@ import ru.snake.jdbc.diff.config.DriverConfig;
 import ru.snake.jdbc.diff.model.ConnectionParametersTableModel;
 import ru.snake.jdbc.diff.model.DriverListModel;
 
+/**
+ * Listen for changing driver parameters in table and provide corresponding
+ * update to connection model.
+ *
+ * @author snake
+ *
+ */
 public final class ChangeParametersTableListener implements ListDataListener {
 
 	private final Configuration config;

@@ -4,7 +4,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
-public class RowsEqualsPredicate implements BiPredicate<List<TableCell>, List<TableCell>> {
+/**
+ * Check that two data table rows are equals. If number of equals fields less
+ * than given parameter rows are considered different.
+ *
+ * @author snake
+ *
+ */
+public final class RowsEqualsPredicate implements BiPredicate<List<TableCell>, List<TableCell>> {
 
 	private final int nEquals;
 
@@ -13,7 +20,7 @@ public class RowsEqualsPredicate implements BiPredicate<List<TableCell>, List<Ta
 	}
 
 	@Override
-	public boolean test(List<TableCell> left, List<TableCell> right) {
+	public boolean test(final List<TableCell> left, final List<TableCell> right) {
 		int n = Integer.min(left.size(), right.size());
 		int nValues = 0;
 

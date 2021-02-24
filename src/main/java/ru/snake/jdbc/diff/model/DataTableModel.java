@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
-public class DataTableModel extends AbstractTableModel {
+public final class DataTableModel extends AbstractTableModel {
 
 	private final List<String> columnNames;
 
@@ -16,12 +16,12 @@ public class DataTableModel extends AbstractTableModel {
 	}
 
 	@Override
-	public String getColumnName(int column) {
+	public String getColumnName(final int column) {
 		return columnNames.get(column);
 	}
 
 	@Override
-	public Class<?> getColumnClass(int columnIndex) {
+	public Class<?> getColumnClass(final int columnIndex) {
 		return DataCell.class;
 	}
 
@@ -36,16 +36,16 @@ public class DataTableModel extends AbstractTableModel {
 	}
 
 	@Override
-	public boolean isCellEditable(int rowIndex, int columnIndex) {
+	public boolean isCellEditable(final int rowIndex, final int columnIndex) {
 		DataCell cell = dataset.get(rowIndex).get(columnIndex);
 		CellState state = cell.getState();
 		Object object = cell.getObject();
 
-		return /*state != CellState.VALID &&*/ object != null;
+		return state != CellState.MISSING && object != null;
 	}
 
 	@Override
-	public Object getValueAt(int rowIndex, int columnIndex) {
+	public Object getValueAt(final int rowIndex, final int columnIndex) {
 		return dataset.get(rowIndex).get(columnIndex);
 	}
 
