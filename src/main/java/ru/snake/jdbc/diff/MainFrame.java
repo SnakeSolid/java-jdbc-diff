@@ -40,6 +40,7 @@ import ru.snake.jdbc.diff.action.RedoAction;
 import ru.snake.jdbc.diff.action.SaveAsFileAction;
 import ru.snake.jdbc.diff.action.SaveFileAction;
 import ru.snake.jdbc.diff.action.SelectConnectionAction;
+import ru.snake.jdbc.diff.action.TextEditActionAdapter;
 import ru.snake.jdbc.diff.action.UndoAction;
 import ru.snake.jdbc.diff.component.AdjustColumnTable;
 import ru.snake.jdbc.diff.component.cell.DataCellEditor;
@@ -251,17 +252,12 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		Action paste = actionMap.get(DefaultEditorKit.pasteAction);
 		Action selectAll = actionMap.get(DefaultEditorKit.selectAllAction);
 
-		cut.putValue(Action.NAME, "Cut");
-		copy.putValue(Action.NAME, "Copy");
-		paste.putValue(Action.NAME, "Paste");
-		selectAll.putValue(Action.NAME, "Select all");
-
 		JPopupMenu popupMenu = new JPopupMenu();
-		popupMenu.add(cut);
-		popupMenu.add(copy);
-		popupMenu.add(paste);
+		popupMenu.add(new TextEditActionAdapter(cut, "Cut"));
+		popupMenu.add(new TextEditActionAdapter(copy, "Copy"));
+		popupMenu.add(new TextEditActionAdapter(paste, "Paste"));
 		popupMenu.addSeparator();
-		popupMenu.add(selectAll);
+		popupMenu.add(new TextEditActionAdapter(selectAll, "Select all"));
 
 		MouseListener popupListener = new TextEditorMouseListener(popupMenu);
 		textComponent.addMouseListener(popupListener);
