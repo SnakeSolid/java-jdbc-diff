@@ -223,11 +223,10 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	 */
 	private void initUndoManager(final JTextComponent textComponent) {
 		UndoManager undoManager = new UndoManager();
-		TextUndoManager textManager = new TextUndoManager(undoManager);
 		Document document = textComponent.getDocument();
-		Action undoAction = new UndoAction(document, textManager);
-		Action redoAction = new RedoAction(document, textManager);
-		document.addUndoableEditListener(textManager);
+		Action undoAction = new UndoAction(document, undoManager);
+		Action redoAction = new RedoAction(document, undoManager);
+		document.addUndoableEditListener(undoManager);
 
 		InputMap inputMap = textComponent.getInputMap();
 		inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK), "Undo");

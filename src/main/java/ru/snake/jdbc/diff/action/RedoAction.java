@@ -5,15 +5,15 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.text.Document;
+import javax.swing.undo.UndoManager;
 
-import ru.snake.jdbc.diff.TextUndoManager;
 import ru.snake.jdbc.diff.listener.DocumentModifiedListener;
 
 public final class RedoAction extends AbstractAction implements Action {
 
 	private final Document document;
 
-	private final TextUndoManager undoManager;
+	private final UndoManager undoManager;
 
 	/**
 	 * Creates new undo action for given undo manager.
@@ -23,7 +23,7 @@ public final class RedoAction extends AbstractAction implements Action {
 	 * @param undoManager
 	 *            undo manager
 	 */
-	public RedoAction(final Document document, final TextUndoManager undoManager) {
+	public RedoAction(final Document document, final UndoManager undoManager) {
 		this.document = document;
 		this.undoManager = undoManager;
 
