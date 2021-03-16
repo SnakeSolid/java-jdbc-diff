@@ -3,11 +3,9 @@ package ru.snake.jdbc.diff;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
-import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -16,12 +14,10 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -35,24 +31,22 @@ import javax.swing.undo.UndoManager;
 import ru.snake.jdbc.diff.action.CloseFrameAction;
 import ru.snake.jdbc.diff.action.ExecuteQueryAction;
 import ru.snake.jdbc.diff.action.NewFileAction;
+import ru.snake.jdbc.diff.action.NextDifferenceAction;
 import ru.snake.jdbc.diff.action.OpenFileAction;
+import ru.snake.jdbc.diff.action.PrevDifferenceAction;
 import ru.snake.jdbc.diff.action.RedoAction;
 import ru.snake.jdbc.diff.action.SaveAsFileAction;
 import ru.snake.jdbc.diff.action.SaveFileAction;
 import ru.snake.jdbc.diff.action.SelectConnectionAction;
 import ru.snake.jdbc.diff.action.TextEditActionAdapter;
 import ru.snake.jdbc.diff.action.UndoAction;
-import ru.snake.jdbc.diff.component.AdjustColumnTable;
-import ru.snake.jdbc.diff.component.cell.DataCellEditor;
-import ru.snake.jdbc.diff.component.cell.DataCellRenderer;
+import ru.snake.jdbc.diff.component.DiffPanel;
 import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.dialog.ConnectionDialog;
 import ru.snake.jdbc.diff.dialog.ObjectCompareDialog;
 import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 import ru.snake.jdbc.diff.listener.TextEditorMouseListener;
 import ru.snake.jdbc.diff.model.ComparedDataset;
-import ru.snake.jdbc.diff.model.DataCell;
-import ru.snake.jdbc.diff.model.DataTableModel;
 import ru.snake.jdbc.diff.model.MainModel;
 import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
 
@@ -71,8 +65,6 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	private static final float CARET_ASPECT_RATIO = 0.1f;
 
 	private static final int DEFAULT_DIVIDER_LOCATION = 350;
-
-	private static final int DATASET_TABLE_GAP = 6;
 
 	private final Configuration config;
 
@@ -99,6 +91,10 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	private SelectConnectionAction prepareConnectionAction;
 
 	private ExecuteQueryAction executeQueryAction;
+
+	private NextDifferenceAction nextDifferenceAction;
+
+	private PrevDifferenceAction prevDifferenceAction;
 
 	private JTextComponent queryText;
 
@@ -147,6 +143,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		closeFrameAction = new CloseFrameAction(this);
 		prepareConnectionAction = new SelectConnectionAction(this);
 		executeQueryAction = new ExecuteQueryAction(this, config);
+		nextDifferenceAction = new NextDifferenceAction(this);
+		prevDifferenceAction = new PrevDifferenceAction(this);
 	}
 
 	/**
@@ -167,9 +165,15 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		connectionMenu.add(prepareConnectionAction);
 		connectionMenu.add(executeQueryAction);
 
+		JMenu differenceMenu = new JMenu("Difference");
+		differenceMenu.setMnemonic('D');
+		differenceMenu.add(prevDifferenceAction);
+		differenceMenu.add(nextDifferenceAction);
+
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
 		menuBar.add(connectionMenu);
+		menuBar.add(differenceMenu);
 
 		setJMenuBar(menuBar);
 	}
@@ -186,6 +190,9 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		toolBar.addSeparator();
 		toolBar.add(prepareConnectionAction);
 		toolBar.add(executeQueryAction);
+		toolBar.addSeparator();
+		toolBar.add(prevDifferenceAction);
+		toolBar.add(nextDifferenceAction);
 
 		add(toolBar, BorderLayout.PAGE_START);
 	}
@@ -208,6 +215,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		datasetTabs = new JTabbedPane();
 		datasetTabs.setTabLayoutPolicy(JTabbedPane.TOP);
 		datasetTabs.setTabPlacement(JTabbedPane.SCROLL_TAB_LAYOUT);
+		datasetTabs.addChangeListener(prevDifferenceAction);
+		datasetTabs.addChangeListener(nextDifferenceAction);
 
 		JSplitPane workspace = new JSplitPane(JSplitPane.VERTICAL_SPLIT, queryScroll, datasetTabs);
 		workspace.setDividerLocation(DEFAULT_DIVIDER_LOCATION);
@@ -353,44 +362,10 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	@Override
 	public void comparedDatasetPushed(final MainModel aModel, final ComparedDataset dataset) {
 		if (model == aModel) {
-			JScrollPane leftTableScroll = createDatasetTable(dataset, dataset.getLeft());
-			JScrollPane rightTableScroll = createDatasetTable(dataset, dataset.getRight());
-			rightTableScroll.setVerticalScrollBar(leftTableScroll.getVerticalScrollBar());
+			DiffPanel diffPanel = new DiffPanel(this, dataset);
 
-			GridLayout layout = new GridLayout(1, 2);
-			layout.setHgap(DATASET_TABLE_GAP);
-
-			JPanel diffTables = new JPanel();
-			diffTables.setLayout(layout);
-			diffTables.add(leftTableScroll);
-			diffTables.add(rightTableScroll);
-
-			datasetTabs.addTab(dataset.getName(), diffTables);
+			datasetTabs.addTab(dataset.getName(), diffPanel);
 		}
-	}
-
-	/**
-	 * Creates scrollable table component using given data table as data source.
-	 * Cell editor will be able to open compare dialog based on data set data.
-	 *
-	 * @param dataset
-	 *            data set
-	 * @param dataTable
-	 *            data table
-	 * @return prepared table component
-	 */
-	private JScrollPane createDatasetTable(final ComparedDataset dataset, final List<List<DataCell>> dataTable) {
-		List<String> columnNames = dataset.getColumnNames();
-		DataTableModel tableModel = new DataTableModel(columnNames, dataTable);
-		JTable table = new AdjustColumnTable(tableModel);
-		table.setDefaultRenderer(DataCell.class, new DataCellRenderer());
-		table.setDefaultEditor(DataCell.class, new DataCellEditor(this, dataset.getLeft(), dataset.getRight()));
-
-		JScrollPane tableScroll = new JScrollPane(table);
-		tableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		tableScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-		return tableScroll;
 	}
 
 }
