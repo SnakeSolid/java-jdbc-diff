@@ -171,9 +171,7 @@ public final class SqlTokenizer {
 	 * Push comment token to internal token list and clear current token.
 	 */
 	private void pushString() {
-		String value = currentToken.toString();
-
-		tokens.add(Token.string(value, startPosition, currentPosition - startPosition));
+		tokens.add(Token.string(startPosition, currentPosition - startPosition));
 
 		startPosition = currentPosition;
 		currentToken.setLength(0);
@@ -215,9 +213,7 @@ public final class SqlTokenizer {
 	 * Push comment token to internal token list and clear current token.
 	 */
 	private void pushComment() {
-		String value = currentToken.toString();
-
-		tokens.add(Token.comment(value, startPosition, currentPosition - startPosition));
+		tokens.add(Token.comment(startPosition, currentPosition - startPosition));
 
 		startPosition = currentPosition;
 		currentToken.setLength(0);
@@ -247,9 +243,7 @@ public final class SqlTokenizer {
 	 * Push comment token to internal token list and clear current token.
 	 */
 	private void pushOther() {
-		String value = currentToken.toString();
-
-		tokens.add(Token.other(value, startPosition, currentPosition - startPosition));
+		tokens.add(Token.other(startPosition, currentPosition - startPosition));
 
 		startPosition = currentPosition;
 		currentToken.setLength(0);
@@ -293,9 +287,9 @@ public final class SqlTokenizer {
 		String value = currentToken.toString();
 
 		if (isKeyword(value)) {
-			tokens.add(Token.keyword(value, startPosition, currentPosition - startPosition));
+			tokens.add(Token.keyword(startPosition, currentPosition - startPosition));
 		} else {
-			tokens.add(Token.other(value, startPosition, currentPosition - startPosition));
+			tokens.add(Token.other(startPosition, currentPosition - startPosition));
 		}
 
 		startPosition = currentPosition;

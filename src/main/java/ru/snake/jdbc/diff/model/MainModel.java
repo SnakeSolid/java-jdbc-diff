@@ -2,7 +2,6 @@ package ru.snake.jdbc.diff.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import javax.swing.text.AttributeSet;
@@ -118,15 +117,6 @@ public class MainModel {
 	 */
 	public StyledDocument getQueryDocument() {
 		return queryDocument;
-	}
-
-	/**
-	 * Returns list of {@link ComparedDataset} compared during query execution.
-	 *
-	 * @return data set document
-	 */
-	public List<ComparedDataset> getComparedDatasets() {
-		return comparedDatasets;
 	}
 
 	/**
@@ -306,7 +296,7 @@ public class MainModel {
 	 * @param listener
 	 *            listener
 	 */
-	public void removeComparedDatasetListener(final ExecutingStateListener listener) {
+	public void removeExecutingStateListener(final ExecutingStateListener listener) {
 		executingStateListeners.remove(listener);
 	}
 
@@ -341,15 +331,6 @@ public class MainModel {
 	 */
 	public boolean isExecuting() {
 		return executing;
-	}
-
-	/**
-	 * Returns unmodifiable list of currently compared connections.
-	 *
-	 * @return compared datasets
-	 */
-	public List<ComparedDatasetListener> getComparedDatasetListeners() {
-		return Collections.unmodifiableList(comparedDatasetListeners);
 	}
 
 	/**

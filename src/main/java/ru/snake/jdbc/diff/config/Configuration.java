@@ -41,14 +41,6 @@ public final class Configuration {
 	}
 
 	/**
-	 * @param similarity
-	 *            the similarity to set
-	 */
-	public void setSimilarity(final int similarity) {
-		this.rowSimilarity = similarity;
-	}
-
-	/**
 	 * Returns font settings.
 	 *
 	 * @return font settings
