@@ -17,8 +17,8 @@ import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.model.ConnectionSettings;
 import ru.snake.jdbc.diff.model.MainModel;
 import ru.snake.jdbc.diff.model.listener.ConnectionListener;
+import ru.snake.jdbc.diff.model.listener.ExecutingStateListener;
 import ru.snake.jdbc.diff.worker.CompareDatasetsWorker;
-import ru.snake.jdbc.diff.worker.wrapper.DatasetUpdateWrapper;
 
 /**
  * Execute query action.
@@ -26,7 +26,8 @@ import ru.snake.jdbc.diff.worker.wrapper.DatasetUpdateWrapper;
  * @author snake
  *
  */
-public final class ExecuteQueryAction extends AbstractAction implements Action, ConnectionListener {
+public final class ExecuteQueryAction extends AbstractAction
+		implements Action, ConnectionListener, ExecutingStateListener {
 
 	private final MainFrame mainFrame;
 
@@ -60,6 +61,7 @@ public final class ExecuteQueryAction extends AbstractAction implements Action, 
 		setEnabled(false);
 
 		model.addConnectionListener(this);
+		model.addExecutingListener(this);
 	}
 
 	@Override
@@ -69,15 +71,9 @@ public final class ExecuteQueryAction extends AbstractAction implements Action, 
 
 		try {
 			String queryText = queryDocument.getText(0, queryLength);
-			DatasetUpdateWrapper datasetWrapper = new DatasetUpdateWrapper(model);
-			CompareDatasetsWorker worker = new CompareDatasetsWorker(
-				config,
-				queryText,
-				model.getLeftConnection(),
-				model.getRightConnection(),
-				datasetWrapper
-			);
+			CompareDatasetsWorker worker = new CompareDatasetsWorker(model, config, queryText);
 
+			model.setExecuting(true);
 			worker.execute();
 		} catch (BadLocationException exception) {
 			Message.showError(exception);
@@ -88,7 +84,14 @@ public final class ExecuteQueryAction extends AbstractAction implements Action, 
 	public void
 			connectionsChanged(final MainModel aModel, final ConnectionSettings left, final ConnectionSettings right) {
 		if (model == aModel) {
-			setEnabled(left != null && right != null);
+			setEnabled(left != null && right != null && !aModel.isExecuting());
+		}
+	}
+
+	@Override
+	public void executingStateChanged(final MainModel aModel, final boolean executing) {
+		if (model == aModel) {
+			setEnabled(aModel.getLeftConnection() != null && aModel.getRightConnection() != null && !executing);
 		}
 	}
 

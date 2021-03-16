@@ -28,6 +28,7 @@ import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.ConnectionSettings;
 import ru.snake.jdbc.diff.model.DataCell;
+import ru.snake.jdbc.diff.model.MainModel;
 import ru.snake.jdbc.diff.worker.driver.DriverDeregistrator;
 import ru.snake.jdbc.diff.worker.mapper.ColumnMapper;
 import ru.snake.jdbc.diff.worker.mapper.MapperBuilder;
@@ -47,6 +48,8 @@ import ru.snake.jdbc.diff.worker.wrapper.DatasetUpdateWrapper;
  */
 public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void> {
 
+	private final MainModel model;
+
 	private final Configuration config;
 
 	private final String queryText;
@@ -60,29 +63,21 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 	/**
 	 * Create new worker to perform building data-set from given query list.
 	 *
+	 * @param model
+	 *            model
 	 * @param config
 	 *            configuration settings
 	 * @param queryText
 	 *            string with queries
-	 * @param leftConnection
-	 *            left connection settings
-	 * @param rightConnection
-	 *            right connection settings
-	 * @param datasetWrapper
-	 *            data set wrapper
 	 */
-	public CompareDatasetsWorker(
-		final Configuration config,
-		final String queryText,
-		final ConnectionSettings leftConnection,
-		final ConnectionSettings rightConnection,
-		final DatasetUpdateWrapper datasetWrapper
-	) {
+	public CompareDatasetsWorker(final MainModel model, final Configuration config, final String queryText) {
+		this.model = model;
 		this.config = config;
 		this.queryText = queryText;
-		this.leftConnectionSettings = leftConnection;
-		this.rightConnectionSettings = rightConnection;
-		this.datasetWrapper = datasetWrapper;
+
+		this.leftConnectionSettings = model.getLeftConnection();
+		this.rightConnectionSettings = model.getRightConnection();
+		this.datasetWrapper = new DatasetUpdateWrapper(model);
 	}
 
 	@Override
@@ -427,6 +422,8 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 
 			Message.showError(errorMassage);
 		}
+
+		model.setExecuting(false);
 	}
 
 	/**

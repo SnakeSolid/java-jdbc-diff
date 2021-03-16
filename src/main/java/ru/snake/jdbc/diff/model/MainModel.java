@@ -16,6 +16,7 @@ import ru.snake.jdbc.diff.listener.DocumentModifiedListener;
 import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
 import ru.snake.jdbc.diff.model.listener.ConnectionListener;
 import ru.snake.jdbc.diff.model.listener.EditorStateListener;
+import ru.snake.jdbc.diff.model.listener.ExecutingStateListener;
 
 /**
  * Main frame internal state model. Contains connections settings and text
@@ -36,9 +37,13 @@ public class MainModel {
 
 	private final List<ComparedDatasetListener> comparedDatasetListeners;
 
+	private final List<ExecutingStateListener> executingStateListeners;
+
 	private ConnectionSettings leftConnection;
 
 	private ConnectionSettings rightConnection;
+
+	private boolean executing;
 
 	private boolean modified;
 
@@ -53,8 +58,10 @@ public class MainModel {
 		this.connectionListeners = new ArrayList<>();
 		this.editorStateListeners = new ArrayList<>();
 		this.comparedDatasetListeners = new ArrayList<>();
+		this.executingStateListeners = new ArrayList<>();
 		this.leftConnection = null;
 		this.rightConnection = null;
+		this.executing = false;
 		this.modified = false;
 		this.file = null;
 
@@ -280,6 +287,60 @@ public class MainModel {
 		comparedDatasets.add(dataset);
 
 		fireDatasetPushed(dataset);
+	}
+
+	/**
+	 * Adds new compared executing listener. Listener will be called when
+	 * executing state changed.
+	 *
+	 * @param listener
+	 *            listener
+	 */
+	public void addExecutingListener(final ExecutingStateListener listener) {
+		executingStateListeners.add(listener);
+	}
+
+	/**
+	 * Removes given executing listener from model.
+	 *
+	 * @param listener
+	 *            listener
+	 */
+	public void removeComparedDatasetListener(final ExecutingStateListener listener) {
+		executingStateListeners.remove(listener);
+	}
+
+	/**
+	 * Fire executing state event for all listeners.
+	 *
+	 * @param state
+	 *            executing state
+	 */
+	private void fireExecutingState(final boolean state) {
+		for (ExecutingStateListener listener : executingStateListeners) {
+			listener.executingStateChanged(this, state);
+		}
+	}
+
+	/**
+	 * Set new executing state.
+	 *
+	 * @param state
+	 *            new state value
+	 */
+	public void setExecuting(final boolean state) {
+		this.executing = state;
+
+		fireExecutingState(state);
+	}
+
+	/**
+	 * Returns model executing state.
+	 *
+	 * @return executing state
+	 */
+	public boolean isExecuting() {
+		return executing;
 	}
 
 	/**
