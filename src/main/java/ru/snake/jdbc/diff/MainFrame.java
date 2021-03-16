@@ -30,6 +30,8 @@ import javax.swing.undo.UndoManager;
 
 import ru.snake.jdbc.diff.action.CloseFrameAction;
 import ru.snake.jdbc.diff.action.ExecuteQueryAction;
+import ru.snake.jdbc.diff.action.FirstDifferenceAction;
+import ru.snake.jdbc.diff.action.LastDifferenceAction;
 import ru.snake.jdbc.diff.action.NewFileAction;
 import ru.snake.jdbc.diff.action.NextDifferenceAction;
 import ru.snake.jdbc.diff.action.OpenFileAction;
@@ -92,9 +94,13 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 	private ExecuteQueryAction executeQueryAction;
 
+	private FirstDifferenceAction firstDifferenceAction;
+
 	private NextDifferenceAction nextDifferenceAction;
 
 	private PrevDifferenceAction prevDifferenceAction;
+
+	private LastDifferenceAction lastDifferenceAction;
 
 	private JTextComponent queryText;
 
@@ -143,8 +149,10 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		closeFrameAction = new CloseFrameAction(this);
 		prepareConnectionAction = new SelectConnectionAction(this);
 		executeQueryAction = new ExecuteQueryAction(this, config);
+		firstDifferenceAction = new FirstDifferenceAction(this);
 		nextDifferenceAction = new NextDifferenceAction(this);
 		prevDifferenceAction = new PrevDifferenceAction(this);
+		lastDifferenceAction = new LastDifferenceAction(this);
 	}
 
 	/**
@@ -167,8 +175,10 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 		JMenu differenceMenu = new JMenu("Difference");
 		differenceMenu.setMnemonic('D');
+		differenceMenu.add(firstDifferenceAction);
 		differenceMenu.add(prevDifferenceAction);
 		differenceMenu.add(nextDifferenceAction);
+		differenceMenu.add(lastDifferenceAction);
 
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.add(fileMenu);
@@ -191,8 +201,10 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		toolBar.add(prepareConnectionAction);
 		toolBar.add(executeQueryAction);
 		toolBar.addSeparator();
+		toolBar.add(firstDifferenceAction);
 		toolBar.add(prevDifferenceAction);
 		toolBar.add(nextDifferenceAction);
+		toolBar.add(lastDifferenceAction);
 
 		add(toolBar, BorderLayout.PAGE_START);
 	}
@@ -215,8 +227,10 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		datasetTabs = new JTabbedPane();
 		datasetTabs.setTabLayoutPolicy(JTabbedPane.TOP);
 		datasetTabs.setTabPlacement(JTabbedPane.SCROLL_TAB_LAYOUT);
+		datasetTabs.addChangeListener(firstDifferenceAction);
 		datasetTabs.addChangeListener(prevDifferenceAction);
 		datasetTabs.addChangeListener(nextDifferenceAction);
+		datasetTabs.addChangeListener(lastDifferenceAction);
 
 		JSplitPane workspace = new JSplitPane(JSplitPane.VERTICAL_SPLIT, queryScroll, datasetTabs);
 		workspace.setDividerLocation(DEFAULT_DIVIDER_LOCATION);
