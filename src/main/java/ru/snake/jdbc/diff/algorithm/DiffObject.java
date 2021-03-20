@@ -53,7 +53,7 @@ public final class DiffObject {
 	/**
 	 * Compares two objects testing class for both object. If both objects are
 	 * {@link Map} then they will be compared using map keys. If both objects
-	 * are {@link List} then they will be compared using {@link DiffList}. Other
+	 * are {@link List} then they will be compared using {@link DiffListClassic}. Other
 	 * wise objects will be compared using given comparator.
 	 *
 	 * @param aLeft
@@ -113,7 +113,7 @@ public final class DiffObject {
 			List<Object> leftList = (List<Object>) aLeft;
 			@SuppressWarnings("unchecked")
 			List<Object> rightList = (List<Object>) aRight;
-			List<DiffListItem<Object>> diffList = new DiffList<Object>(leftList, rightList, comparator).diff();
+			List<DiffListItem<Object>> diffList = new DiffListClassic<Object>(leftList, rightList, comparator).diff();
 			List<Object> resultList = new ArrayList<>();
 
 			for (DiffListItem<Object> diffItem : diffList) {

@@ -21,10 +21,14 @@ import javax.swing.SwingWorker;
 
 import ru.snake.jdbc.diff.Message;
 import ru.snake.jdbc.diff.algorithm.DiffList;
+import ru.snake.jdbc.diff.algorithm.DiffListClassic;
+import ru.snake.jdbc.diff.algorithm.DiffListGreedy;
 import ru.snake.jdbc.diff.algorithm.DiffListItem;
+import ru.snake.jdbc.diff.algorithm.DiffListTrivial;
 import ru.snake.jdbc.diff.blob.BlobParserFactory;
 import ru.snake.jdbc.diff.blob.DefaultBlobParserFactory;
 import ru.snake.jdbc.diff.config.Configuration;
+import ru.snake.jdbc.diff.config.DiffAlgorithm;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.ConnectionSettings;
 import ru.snake.jdbc.diff.model.DataCell;
@@ -304,12 +308,50 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 			columnNames = mappers.getAllColumns();
 		}
 
-		int nRowsEquals = config.getRowSimilarity() * columnNames.size() / 100;
-		RowsEqualsPredicate predicate = new RowsEqualsPredicate(nRowsEquals);
-		List<DiffListItem<List<TableCell>>> diff = new DiffList<>(leftRows, rightRows, predicate).diff();
+		int nCellsEquals = config.getRowSimilarity() * columnNames.size() / 100;
+		DiffList<List<TableCell>> diffList = buildDiffAlgorithm(leftRows, rightRows, nCellsEquals);
+		List<DiffListItem<List<TableCell>>> diff = diffList.diff();
 		ComparedDataset dataset = createComparedDataset(datasetName, diff, columnNames);
 
 		return dataset;
+	}
+
+	/**
+	 * Creates diff algorithm according configuration settings.
+	 *
+	 * @param leftRows
+	 *            left rows
+	 * @param rightRows
+	 *            right rows
+	 * @param nCellsEquals
+	 *            number of equal cell for row similarity
+	 * @return diff algorithm
+	 */
+	private DiffList<List<TableCell>> buildDiffAlgorithm(
+		final List<List<TableCell>> leftRows,
+		final List<List<TableCell>> rightRows,
+		final int nCellsEquals
+	) {
+		DiffAlgorithm diffAlgorithm = config.getDiffAlgorithm();
+		RowsEqualsPredicate predicate;
+
+		switch (diffAlgorithm) {
+		case CLASSIC:
+			predicate = new RowsEqualsPredicate(nCellsEquals);
+
+			return new DiffListClassic<>(leftRows, rightRows, predicate);
+
+		case GREEDY:
+			predicate = new RowsEqualsPredicate(nCellsEquals);
+
+			return new DiffListGreedy<>(leftRows, rightRows, predicate);
+
+		case TRIVIAL:
+			return new DiffListTrivial<>(leftRows, rightRows);
+
+		default:
+			throw new RuntimeException("Corresponding diff algorithm was not found for " + diffAlgorithm);
+		}
 	}
 
 	/**

@@ -9,13 +9,13 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-public class DiffListTest {
+public class DiffListClassicTest {
 
 	@Test
 	public void shouldBuildDiffWhenSequenceEmpty() {
 		List<String> left = Arrays.asList();
 		List<String> right = Arrays.asList();
-		DiffList<String> diffList = new DiffList<String>(left, right, Object::equals);
+		DiffListClassic<String> diffList = new DiffListClassic<String>(left, right, Object::equals);
 		List<DiffListItem<String>> result = diffList.diff();
 
 		assertThat(result.size(), is(0));
@@ -25,7 +25,7 @@ public class DiffListTest {
 	public void shouldBuildDiffWhenSequenceLeftFilled() {
 		List<String> left = Arrays.asList("a", "b", "c");
 		List<String> right = Arrays.asList();
-		DiffList<String> diffList = new DiffList<String>(left, right, Object::equals);
+		DiffListClassic<String> diffList = new DiffListClassic<String>(left, right, Object::equals);
 		List<DiffListItem<String>> result = diffList.diff();
 
 		assertThat(result.size(), is(3));
@@ -44,7 +44,7 @@ public class DiffListTest {
 	public void shouldBuildDiffWhenSequenceRightFilled() {
 		List<String> left = Arrays.asList();
 		List<String> right = Arrays.asList("a", "b", "c");
-		DiffList<String> diffList = new DiffList<String>(left, right, Object::equals);
+		DiffListClassic<String> diffList = new DiffListClassic<String>(left, right, Object::equals);
 		List<DiffListItem<String>> result = diffList.diff();
 
 		assertThat(result.size(), is(3));
@@ -63,7 +63,7 @@ public class DiffListTest {
 	public void shouldBuildDiffWhenSequenceInTail() {
 		List<String> left = Arrays.asList("a", "b", "c", "d", "e");
 		List<String> right = Arrays.asList("c", "x", "d", "x", "e");
-		DiffList<String> diffList = new DiffList<String>(left, right, Object::equals);
+		DiffListClassic<String> diffList = new DiffListClassic<String>(left, right, Object::equals);
 		List<DiffListItem<String>> result = diffList.diff();
 
 		assertThat(result.size(), is(7));
@@ -94,7 +94,7 @@ public class DiffListTest {
 	public void shouldBuildDiffWhenSequenceInHead() {
 		List<String> left = Arrays.asList("a", "b", "c", "d", "e");
 		List<String> right = Arrays.asList("a", "x", "b", "x", "c");
-		DiffList<String> diffList = new DiffList<String>(left, right, Object::equals);
+		DiffListClassic<String> diffList = new DiffListClassic<String>(left, right, Object::equals);
 		List<DiffListItem<String>> result = diffList.diff();
 
 		assertThat(result.size(), is(7));

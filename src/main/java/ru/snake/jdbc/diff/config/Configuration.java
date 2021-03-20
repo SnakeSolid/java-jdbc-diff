@@ -13,9 +13,11 @@ public final class Configuration {
 
 	private static final int DEFAULT_SIMILARITY = 80;
 
+	private FontConfig font;
+
 	private int rowSimilarity;
 
-	private FontConfig font;
+	private DiffAlgorithm diffAlgorithm;
 
 	private Map<String, BlobParserConfig> blobParsers;
 
@@ -25,10 +27,20 @@ public final class Configuration {
 	 * Create empty configuration instance.
 	 */
 	public Configuration() {
-		this.rowSimilarity = DEFAULT_SIMILARITY;
 		this.font = new FontConfig();
+		this.rowSimilarity = DEFAULT_SIMILARITY;
+		this.diffAlgorithm = DiffAlgorithm.GREEDY;
 		this.blobParsers = Collections.emptyMap();
 		this.drivers = Collections.emptyMap();
+	}
+
+	/**
+	 * Returns font settings.
+	 *
+	 * @return font settings
+	 */
+	public FontConfig getFont() {
+		return font;
 	}
 
 	/**
@@ -41,12 +53,10 @@ public final class Configuration {
 	}
 
 	/**
-	 * Returns font settings.
-	 *
-	 * @return font settings
+	 * @return the diffAlgorithm
 	 */
-	public FontConfig getFont() {
-		return font;
+	public DiffAlgorithm getDiffAlgorithm() {
+		return diffAlgorithm;
 	}
 
 	/**
@@ -67,8 +77,8 @@ public final class Configuration {
 
 	@Override
 	public String toString() {
-		return "Configuration [similarity=" + rowSimilarity + ", font=" + font + ", blobParsers=" + blobParsers
-				+ ", drivers=" + drivers + "]";
+		return "Configuration [font=" + font + ", rowSimilarity=" + rowSimilarity + ", diffAlgorithm=" + diffAlgorithm
+				+ ", blobParsers=" + blobParsers + ", drivers=" + drivers + "]";
 	}
 
 }
