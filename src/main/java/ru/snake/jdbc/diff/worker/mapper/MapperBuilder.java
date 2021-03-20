@@ -3,13 +3,18 @@ package ru.snake.jdbc.diff.worker.mapper;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
+import ru.snake.jdbc.diff.algorithm.DiffListClassic;
+import ru.snake.jdbc.diff.algorithm.DiffListItem;
+import ru.snake.jdbc.diff.algorithm.DiffType;
 import ru.snake.jdbc.diff.blob.BlobParser;
 import ru.snake.jdbc.diff.blob.BlobParserFactory;
 
-public class MapperBuilder {
+public final class MapperBuilder {
 
 	private final ResultSetMetaData leftMetaData;
 
@@ -39,10 +44,20 @@ public class MapperBuilder {
 		this.rightFactory = rightFactory;
 	}
 
-	public Mappers build(String tableName) throws SQLException {
+	/**
+	 * Create column mappers for both result sets.
+	 *
+	 * @param tableName
+	 *            table name
+	 * @return column mappers for both tables
+	 * @throws SQLException
+	 *             if error occurred
+	 */
+	public Mappers build(final String tableName) throws SQLException {
 		List<ColumnMapper> leftMappers = new ArrayList<>();
 		List<ColumnMapper> rightMappers = new ArrayList<>();
-		List<String> allColumns = new ArrayList<>();
+		List<String> leftColumns = new ArrayList<>();
+		List<String> rightColumns = new ArrayList<>();
 
 		for (int index = 1; index <= leftMetaData.getColumnCount(); index += 1) {
 			String fieldName = leftMetaData.getColumnName(index);
@@ -56,7 +71,7 @@ public class MapperBuilder {
 				leftMappers.add(new TextMapper(index));
 			}
 
-			allColumns.add(fieldName);
+			leftColumns.add(fieldName);
 		}
 
 		for (int index = 1; index <= rightMetaData.getColumnCount(); index += 1) {
@@ -70,19 +85,46 @@ public class MapperBuilder {
 			} else {
 				rightMappers.add(new TextMapper(index));
 			}
+
+			rightColumns.add(fieldName);
 		}
 
-		// Hack to keep number of value the same for both tables.
+		List<DiffListItem<String>> columnDiff = new DiffListClassic<String>(leftColumns, rightColumns, Objects::equals)
+			.diff();
+		Iterator<ColumnMapper> leftIterator = leftMappers.iterator();
+		Iterator<ColumnMapper> rightIterator = rightMappers.iterator();
+		List<ColumnMapper> allLeftMappers = new ArrayList<>();
+		List<ColumnMapper> allRightMappers = new ArrayList<>();
+		List<String> allColumns = new ArrayList<>();
 
-		while (leftMappers.size() < rightMappers.size()) {
-			leftMappers.add(new EmptyMapper());
+		for (DiffListItem<String> diff : columnDiff) {
+			DiffType type = diff.getType();
+
+			switch (type) {
+			case BOTH:
+				allLeftMappers.add(leftIterator.next());
+				allRightMappers.add(rightIterator.next());
+				allColumns.add(diff.getLeft());
+				break;
+
+			case LEFT:
+				allLeftMappers.add(leftIterator.next());
+				allRightMappers.add(new EmptyMapper());
+				allColumns.add(diff.getLeft());
+				break;
+
+			case RIGHT:
+				allLeftMappers.add(new EmptyMapper());
+				allRightMappers.add(rightIterator.next());
+				allColumns.add(diff.getRight());
+				break;
+
+			default:
+				throw new RuntimeException("Unexpected diff type - " + type);
+			}
 		}
 
-		while (rightMappers.size() < leftMappers.size()) {
-			rightMappers.add(new EmptyMapper());
-		}
-
-		return new Mappers(leftMappers, rightMappers, allColumns);
+		return new Mappers(allLeftMappers, allRightMappers, allColumns);
 	}
 
 	@Override

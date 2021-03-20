@@ -8,7 +8,7 @@ import java.util.List;
  * @author snake
  *
  */
-public class Mappers {
+public final class Mappers {
 
 	private final List<ColumnMapper> leftMappers;
 
