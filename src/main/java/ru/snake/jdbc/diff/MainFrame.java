@@ -40,6 +40,7 @@ import ru.snake.jdbc.diff.action.RedoAction;
 import ru.snake.jdbc.diff.action.SaveAsFileAction;
 import ru.snake.jdbc.diff.action.SaveFileAction;
 import ru.snake.jdbc.diff.action.SelectConnectionAction;
+import ru.snake.jdbc.diff.action.SettingsAction;
 import ru.snake.jdbc.diff.action.TextEditActionAdapter;
 import ru.snake.jdbc.diff.action.UndoAction;
 import ru.snake.jdbc.diff.component.DiffPanel;
@@ -47,6 +48,7 @@ import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.dialog.ConnectionDialog;
 import ru.snake.jdbc.diff.dialog.ObjectCompareDialog;
 import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
+import ru.snake.jdbc.diff.dialog.SettingsDialog;
 import ru.snake.jdbc.diff.listener.TextEditorMouseListener;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.MainModel;
@@ -74,6 +76,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 	private JFileChooser queryChooser;
 
+	private SettingsDialog settingsDialog;
+
 	private ConnectionDialog connectionDialog;
 
 	private ObjectCompareDialog objectCompareDialog;
@@ -87,6 +91,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	private Action saveFileAction;
 
 	private Action saveAsFileAction;
+
+	private SettingsAction settingsAction;
 
 	private CloseFrameAction closeFrameAction;
 
@@ -146,6 +152,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		openFileAction = new OpenFileAction(this);
 		saveFileAction = new SaveFileAction(this);
 		saveAsFileAction = new SaveAsFileAction(this);
+		settingsAction = new SettingsAction(this);
 		closeFrameAction = new CloseFrameAction(this);
 		prepareConnectionAction = new SelectConnectionAction(this);
 		executeQueryAction = new ExecuteQueryAction(this, config);
@@ -165,6 +172,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		fileMenu.add(openFileAction);
 		fileMenu.add(saveFileAction);
 		fileMenu.add(saveAsFileAction);
+		fileMenu.addSeparator();
+		fileMenu.add(settingsAction);
 		fileMenu.addSeparator();
 		fileMenu.add(closeFrameAction);
 
@@ -313,6 +322,19 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		}
 
 		return queryChooser;
+	}
+
+	/**
+	 * Returns lay initialized {@link SettingsDialog} to set preferences.
+	 *
+	 * @return settings dialog
+	 */
+	public SettingsDialog getSettingsDialog() {
+		if (settingsDialog == null) {
+			settingsDialog = new SettingsDialog(this, config);
+		}
+
+		return settingsDialog;
 	}
 
 	/**

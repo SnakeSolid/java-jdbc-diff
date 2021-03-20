@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
@@ -332,7 +333,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		final List<List<TableCell>> rightRows,
 		final int nCellsEquals
 	) {
-		DiffAlgorithm diffAlgorithm = config.getDiffAlgorithm();
+		DiffAlgorithm diffAlgorithm = Optional.ofNullable(model.getDiffAlgorithm()).orElseGet(config::getDiffAlgorithm);
 		RowsEqualsPredicate predicate;
 
 		switch (diffAlgorithm) {

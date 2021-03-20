@@ -10,6 +10,7 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
+import ru.snake.jdbc.diff.config.DiffAlgorithm;
 import ru.snake.jdbc.diff.document.SqlDocument;
 import ru.snake.jdbc.diff.listener.DocumentModifiedListener;
 import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
@@ -38,6 +39,8 @@ public class MainModel {
 
 	private final List<ExecutingStateListener> executingStateListeners;
 
+	private DiffAlgorithm diffAlgorithm;
+
 	private ConnectionSettings leftConnection;
 
 	private ConnectionSettings rightConnection;
@@ -58,6 +61,7 @@ public class MainModel {
 		this.editorStateListeners = new ArrayList<>();
 		this.comparedDatasetListeners = new ArrayList<>();
 		this.executingStateListeners = new ArrayList<>();
+		this.diffAlgorithm = null;
 		this.leftConnection = null;
 		this.rightConnection = null;
 		this.executing = false;
@@ -391,6 +395,23 @@ public class MainModel {
 		file = loadedFile;
 
 		fireEditorStateChanged();
+	}
+
+	/**
+	 * Set preferred diff algorithm.
+	 *
+	 * @param aDiffAlgorithm
+	 *            diff algorithm
+	 */
+	public void setDiffAlgorithm(final DiffAlgorithm aDiffAlgorithm) {
+		this.diffAlgorithm = aDiffAlgorithm;
+	}
+
+	/**
+	 * @return the diffAlgorithm
+	 */
+	public DiffAlgorithm getDiffAlgorithm() {
+		return diffAlgorithm;
 	}
 
 }
