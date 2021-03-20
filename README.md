@@ -12,12 +12,13 @@ Configuration file example:
 
 ```yaml
 ---
-rowSimilarity: 80 # percent of different values in row to count rows different
-
 font: # font settings for query and result editors
   name: "Monospaced" # Font family, default value "Monospaced"
   style: BOLD # Font style: PLAIN, BOLD, ITALIC or BOLD_ITALIC
   size: 14 # Font size in pixels
+
+rowSimilarity: 80 # percent of different values in row to count rows different
+rdiffAlgorithm: GREEDY # select default diff algorithm: CLASSIC, GREEDY or TRIVIAL. By default - GREEDY
 
 blobParsers: # define BLOB parser libraries
   " Do not parser BLOBs":
