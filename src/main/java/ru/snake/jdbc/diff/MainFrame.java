@@ -30,6 +30,7 @@ import javax.swing.undo.UndoManager;
 
 import ru.snake.jdbc.diff.action.CloseFrameAction;
 import ru.snake.jdbc.diff.action.ExecuteQueryAction;
+import ru.snake.jdbc.diff.action.ExecuteSelectedAction;
 import ru.snake.jdbc.diff.action.FirstDifferenceAction;
 import ru.snake.jdbc.diff.action.LastDifferenceAction;
 import ru.snake.jdbc.diff.action.NewFileAction;
@@ -100,6 +101,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 	private ExecuteQueryAction executeQueryAction;
 
+	private ExecuteSelectedAction executeSelectedAction;
+
 	private FirstDifferenceAction firstDifferenceAction;
 
 	private NextDifferenceAction nextDifferenceAction;
@@ -156,6 +159,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		closeFrameAction = new CloseFrameAction(this);
 		prepareConnectionAction = new SelectConnectionAction(this);
 		executeQueryAction = new ExecuteQueryAction(this, config);
+		executeSelectedAction = new ExecuteSelectedAction(this, config);
 		firstDifferenceAction = new FirstDifferenceAction(this);
 		nextDifferenceAction = new NextDifferenceAction(this);
 		prevDifferenceAction = new PrevDifferenceAction(this);
@@ -181,6 +185,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		connectionMenu.setMnemonic('C');
 		connectionMenu.add(prepareConnectionAction);
 		connectionMenu.add(executeQueryAction);
+		connectionMenu.add(executeSelectedAction);
 
 		JMenu differenceMenu = new JMenu("Difference");
 		differenceMenu.setMnemonic('D');
@@ -209,6 +214,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		toolBar.addSeparator();
 		toolBar.add(prepareConnectionAction);
 		toolBar.add(executeQueryAction);
+		toolBar.add(executeSelectedAction);
 		toolBar.addSeparator();
 		toolBar.add(firstDifferenceAction);
 		toolBar.add(prevDifferenceAction);
@@ -224,6 +230,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	private void createComponents() {
 		Font configuredFont = getConfigFont();
 		queryText = new JTextPane(this.model.getQueryDocument());
+		queryText.addCaretListener(executeSelectedAction);
 		queryText.putClientProperty("caretAspectRatio", CARET_ASPECT_RATIO);
 		queryText.setFont(configuredFont);
 		initUndoManager(queryText);
