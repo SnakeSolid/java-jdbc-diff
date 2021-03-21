@@ -1,7 +1,6 @@
 package ru.snake.jdbc.diff.component;
 
 import java.awt.GridLayout;
-import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,20 +17,19 @@ public class DiffPanel extends JPanel {
 
 	private static final int DATASET_TABLE_GAP = 6;
 
-	private final MainFrame mainFrame;
+	private final DataTableModel leftModel;
 
-	private final ComparedDataset dataset;
+	private final DataTableModel rightModel;
 
 	private final JTable leftTable;
 
 	private final JTable rightTable;
 
 	public DiffPanel(final MainFrame mainFrame, final ComparedDataset dataset) {
-		this.mainFrame = mainFrame;
-		this.dataset = dataset;
-
-		this.leftTable = createDatasetTable(dataset, dataset.getLeft());
-		this.rightTable = createDatasetTable(dataset, dataset.getRight());
+		this.leftModel = new DataTableModel(dataset.getColumnNames(), dataset.getLeft());
+		this.rightModel = new DataTableModel(dataset.getColumnNames(), dataset.getRight());
+		this.leftTable = createDatasetTable(mainFrame, dataset, leftModel);
+		this.rightTable = createDatasetTable(mainFrame, dataset, rightModel);
 
 		JScrollPane leftTableScroll = new JScrollPane(leftTable);
 		leftTableScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -48,6 +46,20 @@ public class DiffPanel extends JPanel {
 		setLayout(layout);
 		add(leftTableScroll);
 		add(rightTableScroll);
+	}
+
+	/**
+	 * @return the leftModel
+	 */
+	public DataTableModel getLeftModel() {
+		return leftModel;
+	}
+
+	/**
+	 * @return the rightModel
+	 */
+	public DataTableModel getRightModel() {
+		return rightModel;
 	}
 
 	/**
@@ -72,15 +84,19 @@ public class DiffPanel extends JPanel {
 	 * Creates table component using given data table as data source. Cell
 	 * editor will be able to open compare dialog based on data set data.
 	 *
+	 * @param mainFrame
+	 *            main frame
 	 * @param aDataset
 	 *            data set
-	 * @param dataTable
-	 *            data table
+	 * @param tableModel
+	 *            data model
 	 * @return prepared table component
 	 */
-	private JTable createDatasetTable(final ComparedDataset aDataset, final List<List<DataCell>> dataTable) {
-		List<String> columnNames = aDataset.getColumnNames();
-		DataTableModel tableModel = new DataTableModel(columnNames, dataTable);
+	private JTable createDatasetTable(
+		final MainFrame mainFrame,
+		final ComparedDataset aDataset,
+		final DataTableModel tableModel
+	) {
 		JTable table = new AdjustColumnTable(tableModel);
 		table.setDefaultRenderer(DataCell.class, new DataCellRenderer());
 		table.setDefaultEditor(DataCell.class, new DataCellEditor(mainFrame, aDataset.getLeft(), aDataset.getRight()));

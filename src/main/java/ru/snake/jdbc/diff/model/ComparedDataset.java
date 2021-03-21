@@ -14,15 +14,15 @@ public final class ComparedDataset {
 
 	private final List<String> columnNames;
 
-	private final List<List<DataCell>> left;
+	private final ComparedTable left;
 
-	private final List<List<DataCell>> right;
+	private final ComparedTable right;
 
 	public ComparedDataset(
 		final String name,
 		final List<String> columnNames,
-		final List<List<DataCell>> left,
-		final List<List<DataCell>> right
+		final ComparedTable left,
+		final ComparedTable right
 	) {
 		this.name = name;
 		this.columnNames = columnNames;
@@ -47,14 +47,14 @@ public final class ComparedDataset {
 	/**
 	 * @return the left
 	 */
-	public List<List<DataCell>> getLeft() {
+	public ComparedTable getLeft() {
 		return left;
 	}
 
 	/**
 	 * @return the right
 	 */
-	public List<List<DataCell>> getRight() {
+	public ComparedTable getRight() {
 		return right;
 	}
 

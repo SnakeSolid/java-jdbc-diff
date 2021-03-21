@@ -3,7 +3,6 @@ package ru.snake.jdbc.diff.component.cell;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
@@ -14,6 +13,7 @@ import ru.snake.jdbc.diff.MainFrame;
 import ru.snake.jdbc.diff.dialog.ObjectCompareDialog;
 import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 import ru.snake.jdbc.diff.model.CellState;
+import ru.snake.jdbc.diff.model.ComparedTable;
 import ru.snake.jdbc.diff.model.DataCell;
 
 /**
@@ -28,9 +28,9 @@ public final class DataCellEditor extends AbstractCellEditor implements TableCel
 
 	private final MainFrame mainFrame;
 
-	private final List<List<DataCell>> left;
+	private final ComparedTable left;
 
-	private final List<List<DataCell>> right;
+	private final ComparedTable right;
 
 	private final JButton button;
 
@@ -45,19 +45,15 @@ public final class DataCellEditor extends AbstractCellEditor implements TableCel
 	 *
 	 * @param mainFrame
 	 *            main frame
-	 * @param left
+	 * @param leftTable
 	 *            left data table
-	 * @param right
+	 * @param rightTable
 	 *            right data table
 	 */
-	public DataCellEditor(
-		final MainFrame mainFrame,
-		final List<List<DataCell>> left,
-		final List<List<DataCell>> right
-	) {
+	public DataCellEditor(final MainFrame mainFrame, final ComparedTable leftTable, final ComparedTable rightTable) {
 		this.mainFrame = mainFrame;
-		this.left = left;
-		this.right = right;
+		this.left = leftTable;
+		this.right = rightTable;
 		this.button = new JButton();
 		this.button.addActionListener(this);
 		this.button.setBackground(ColorManager.getEditColor());
@@ -79,8 +75,8 @@ public final class DataCellEditor extends AbstractCellEditor implements TableCel
 				dialog.setViewObject(object);
 				dialog.setVisible(true);
 			} else {
-				DataCell leftCell = left.get(row).get(column);
-				DataCell rightCell = right.get(row).get(column);
+				DataCell leftCell = left.getRow(row).getCell(column);
+				DataCell rightCell = right.getRow(row).getCell(column);
 				Object leftObject = leftCell.getObject();
 				Object rightObject = rightCell.getObject();
 
@@ -105,10 +101,12 @@ public final class DataCellEditor extends AbstractCellEditor implements TableCel
 		}
 	}
 
+	@Override
 	public Object getCellEditorValue() {
 		return currentValue;
 	}
 
+	@Override
 	public Component getTableCellEditorComponent(
 		final JTable table,
 		final Object value,

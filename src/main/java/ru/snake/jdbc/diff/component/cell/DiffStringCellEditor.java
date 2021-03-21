@@ -55,10 +55,12 @@ public final class DiffStringCellEditor extends AbstractCellEditor implements Ta
 		}
 	}
 
+	@Override
 	public Object getCellEditorValue() {
 		return currentValue;
 	}
 
+	@Override
 	public Component getTableCellEditorComponent(
 		final JTable table,
 		final Object value,

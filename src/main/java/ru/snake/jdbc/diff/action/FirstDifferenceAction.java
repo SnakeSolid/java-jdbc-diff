@@ -13,11 +13,11 @@ import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.table.TableModel;
 
 import ru.snake.jdbc.diff.MainFrame;
 import ru.snake.jdbc.diff.action.util.DifferenceUtil;
 import ru.snake.jdbc.diff.component.DiffPanel;
+import ru.snake.jdbc.diff.model.DataTableModel;
 
 /**
  * Select first row with difference in table.
@@ -33,6 +33,10 @@ public final class FirstDifferenceAction extends AbstractAction implements Actio
 
 	private JTable rightTable;
 
+	private DataTableModel leftModel;
+
+	private DataTableModel rightModel;
+
 	/**
 	 * Create new close frame action.
 	 *
@@ -43,6 +47,8 @@ public final class FirstDifferenceAction extends AbstractAction implements Actio
 		this.frame = frame;
 		this.leftTable = null;
 		this.rightTable = null;
+		this.leftModel = null;
+		this.rightModel = null;
 
 		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/first-x16.png"));
 		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/first-x24.png"));
@@ -60,29 +66,18 @@ public final class FirstDifferenceAction extends AbstractAction implements Actio
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if (leftTable != null && rightTable != null) {
-			TableModel leftModel = leftTable.getModel();
-			TableModel rightModel = rightTable.getModel();
 			int nRows = Integer.min(leftModel.getRowCount(), rightModel.getRowCount());
 
 			if (nRows > 0) {
-				int index = 0;
-				int nColumns = Integer.min(leftModel.getColumnCount(), rightModel.getColumnCount());
+				int nextIndex = DifferenceUtil
+					.getMinSelectedRow(leftModel.getFirstDifference(), rightModel.getFirstDifference());
 
-				while (index < nRows) {
-					boolean hasDifference = DifferenceUtil.checkDifference(leftModel, index, nColumns)
-							| DifferenceUtil.checkDifference(rightModel, index, nColumns);
+				if (nextIndex != -1) {
+					leftTable.setRowSelectionInterval(nextIndex, nextIndex);
+					rightTable.setRowSelectionInterval(nextIndex, nextIndex);
 
-					if (hasDifference) {
-						leftTable.setRowSelectionInterval(index, index);
-						rightTable.setRowSelectionInterval(index, index);
-
-						DifferenceUtil.scrollToRow(leftTable, index);
-						DifferenceUtil.scrollToRow(rightTable, index);
-
-						break;
-					}
-
-					index += 1;
+					DifferenceUtil.scrollToRow(leftTable, nextIndex);
+					DifferenceUtil.scrollToRow(rightTable, nextIndex);
 				}
 			}
 		}
@@ -95,18 +90,24 @@ public final class FirstDifferenceAction extends AbstractAction implements Actio
 		if (source instanceof JTabbedPane) {
 			JTabbedPane tabbedPane = (JTabbedPane) source;
 			Component component = tabbedPane.getSelectedComponent();
+			boolean enable = false;
 
 			if (component != null && component instanceof DiffPanel) {
 				DiffPanel diffPanel = (DiffPanel) component;
 
 				leftTable = diffPanel.getLeftTable();
 				rightTable = diffPanel.getRightTable();
+				leftModel = diffPanel.getLeftModel();
+				rightModel = diffPanel.getRightModel();
+				enable = true;
 			} else {
 				leftTable = null;
 				rightTable = null;
+				leftModel = null;
+				rightModel = null;
 			}
 
-			setEnabled(leftTable != null && rightTable != null);
+			setEnabled(enable);
 		}
 	}
 

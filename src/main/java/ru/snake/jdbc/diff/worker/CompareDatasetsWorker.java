@@ -31,6 +31,8 @@ import ru.snake.jdbc.diff.blob.DefaultBlobParserFactory;
 import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.config.DiffAlgorithm;
 import ru.snake.jdbc.diff.model.ComparedDataset;
+import ru.snake.jdbc.diff.model.ComparedRow;
+import ru.snake.jdbc.diff.model.ComparedTable;
 import ru.snake.jdbc.diff.model.ConnectionSettings;
 import ru.snake.jdbc.diff.model.DataCell;
 import ru.snake.jdbc.diff.model.MainModel;
@@ -371,15 +373,18 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		final List<DiffListItem<List<TableCell>>> diff,
 		final List<String> columnNames
 	) {
-		List<List<DataCell>> left = new ArrayList<>();
-		List<List<DataCell>> right = new ArrayList<>();
+		List<ComparedRow> leftRows = new ArrayList<>();
+		List<ComparedRow> rightRows = new ArrayList<>();
 
 		for (DiffListItem<List<TableCell>> diffItem : diff) {
-			left.add(createDataRow(diffItem.getLeft(), diffItem.getRight()));
-			right.add(createDataRow(diffItem.getRight(), diffItem.getLeft()));
+			leftRows.add(createDataRow(diffItem.getLeft(), diffItem.getRight()));
+			rightRows.add(createDataRow(diffItem.getRight(), diffItem.getLeft()));
 		}
 
-		return new ComparedDataset(name, columnNames, left, right);
+		ComparedTable leftTable = ComparedTable.create(leftRows);
+		ComparedTable rightTable = ComparedTable.create(rightRows);
+
+		return new ComparedDataset(name, columnNames, leftTable, rightTable);
 	}
 
 	/**
@@ -391,7 +396,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 	 *            other difference row
 	 * @return data table row
 	 */
-	private List<DataCell> createDataRow(final List<TableCell> thisRow, final List<TableCell> otherRow) {
+	private ComparedRow createDataRow(final List<TableCell> thisRow, final List<TableCell> otherRow) {
 		List<DataCell> dataRow = new ArrayList<>();
 
 		if (thisRow == null) {
@@ -419,7 +424,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 			}
 		}
 
-		return dataRow;
+		return ComparedRow.create(dataRow);
 	}
 
 	/**
