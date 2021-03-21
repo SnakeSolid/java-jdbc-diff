@@ -41,6 +41,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	 *
 	 * @return root node
 	 */
+	@Override
 	public Object getRoot() {
 		return root;
 	}
@@ -52,6 +53,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	 *            node to check
 	 * @return true if node is leaf
 	 */
+	@Override
 	public boolean isLeaf(final Object node) {
 		return getChildCount(node) == 0;
 	}
@@ -64,6 +66,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	 * @param newValue
 	 *            new value
 	 */
+	@Override
 	public void valueForPathChanged(final TreePath path, final Object newValue) {
 	}
 
@@ -76,6 +79,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	 *            child node
 	 * @return index of child node in parent
 	 */
+	@Override
 	public int getIndexOfChild(final Object parent, final Object child) {
 		return 0;
 	}
@@ -86,6 +90,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	 * @param listener
 	 *            listener
 	 */
+	@Override
 	public void addTreeModelListener(final TreeModelListener listener) {
 		listenerList.add(TreeModelListener.class, listener);
 	}
@@ -96,6 +101,7 @@ public abstract class DiffAbstractTreeTableModel implements DiffTreeTableModel {
 	 * @param listener
 	 *            listener
 	 */
+	@Override
 	public void removeTreeModelListener(final TreeModelListener listener) {
 		listenerList.remove(TreeModelListener.class, listener);
 	}

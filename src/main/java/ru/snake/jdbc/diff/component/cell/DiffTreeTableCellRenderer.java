@@ -30,6 +30,7 @@ public final class DiffTreeTableCellRenderer extends JTree implements TableCellR
 		setRowHeight(getRowHeight());
 	}
 
+	@Override
 	public void setRowHeight(final int rowHeight) {
 		if (rowHeight > 0) {
 			super.setRowHeight(rowHeight);
@@ -40,16 +41,19 @@ public final class DiffTreeTableCellRenderer extends JTree implements TableCellR
 		}
 	}
 
+	@Override
 	public void setBounds(final int x, final int y, final int w, final int h) {
 		super.setBounds(x, 0, w, treeTable.getHeight());
 	}
 
+	@Override
 	public void paint(final Graphics g) {
 		g.translate(0, -visibleRow * getRowHeight());
 
 		super.paint(g);
 	}
 
+	@Override
 	public Component getTableCellRendererComponent(
 		final JTable table,
 		final Object value,

@@ -10,9 +10,9 @@ import ru.snake.jdbc.diff.component.node.ObjectNode;
  */
 public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 
-	static protected String[] columnNames = { "Name", "Value" };
+	private static final String[] COLUMN_NAMES = { "Name", "Value" };
 
-	static protected Class<?>[] columnTypes = { DiffTreeTableModel.class, String.class };
+	private static final Class<?>[] COLUMN_TYPES = { DiffTreeTableModel.class, String.class };
 
 	/**
 	 * Creates new view tree table model.
@@ -33,6 +33,7 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 *            child index
 	 * @return child node
 	 */
+	@Override
 	public Object getChild(final Object parent, final int index) {
 		return ((ObjectNode) parent).getChildren().get(index);
 	}
@@ -44,6 +45,7 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 *            parent node
 	 * @return number of child nodes
 	 */
+	@Override
 	public int getChildCount(final Object parent) {
 		return ((ObjectNode) parent).getChildren().size();
 	}
@@ -53,8 +55,9 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 *
 	 * @return column count
 	 */
+	@Override
 	public int getColumnCount() {
-		return columnNames.length;
+		return COLUMN_NAMES.length;
 	}
 
 	/**
@@ -64,8 +67,9 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 *            column index
 	 * @return column name
 	 */
+	@Override
 	public String getColumnName(final int column) {
-		return columnNames[column];
+		return COLUMN_NAMES[column];
 	}
 
 	/**
@@ -75,8 +79,9 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 *            column index
 	 * @return column class
 	 */
+	@Override
 	public Class<?> getColumnClass(final int column) {
-		return columnTypes[column];
+		return COLUMN_TYPES[column];
 	}
 
 	/**
@@ -88,6 +93,7 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 *            column index
 	 * @return cell value
 	 */
+	@Override
 	public Object getValueAt(final Object node, final int column) {
 		switch (column) {
 		case 0:
@@ -112,6 +118,7 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 *            column index
 	 * @return true if cell editable
 	 */
+	@Override
 	public boolean isCellEditable(final Object node, final int column) {
 		return column == 0;
 	}
@@ -126,6 +133,7 @@ public final class ObjectViewModel extends DiffAbstractTreeTableModel {
 	 * @param column
 	 *            column index
 	 */
+	@Override
 	public void setValueAt(final Object aValue, final Object node, final int column) {
 	}
 

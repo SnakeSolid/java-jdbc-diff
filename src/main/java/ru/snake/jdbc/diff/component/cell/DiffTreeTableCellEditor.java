@@ -24,6 +24,7 @@ public final class DiffTreeTableCellEditor extends AbstractCellEditor implements
 		this.tree = tree;
 	}
 
+	@Override
 	public Component getTableCellEditorComponent(
 		final JTable table,
 		final Object value,
@@ -34,6 +35,7 @@ public final class DiffTreeTableCellEditor extends AbstractCellEditor implements
 		return tree;
 	}
 
+	@Override
 	public boolean isCellEditable(final EventObject e) {
 		if (e instanceof MouseEvent) {
 			MouseEvent me = (MouseEvent) e;
