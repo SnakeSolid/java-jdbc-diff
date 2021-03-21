@@ -50,8 +50,8 @@ public final class LastDifferenceAction extends AbstractAction implements Action
 		this.leftModel = null;
 		this.rightModel = null;
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/last-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/last-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-last-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-last-x24.png"));
 
 		putValue(NAME, "Last difference");
 		putValue(SHORT_DESCRIPTION, "Go to last difference in comparison table");

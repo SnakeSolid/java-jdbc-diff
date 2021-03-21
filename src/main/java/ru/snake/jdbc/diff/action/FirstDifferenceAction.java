@@ -50,8 +50,8 @@ public final class FirstDifferenceAction extends AbstractAction implements Actio
 		this.leftModel = null;
 		this.rightModel = null;
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/first-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/first-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-first-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-first-x24.png"));
 
 		putValue(NAME, "First difference");
 		putValue(SHORT_DESCRIPTION, "Go to first difference in comparison table");

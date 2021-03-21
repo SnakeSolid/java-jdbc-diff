@@ -36,8 +36,8 @@ public final class SettingsAction extends AbstractAction implements Action {
 		this.mainFrame = mainFrame;
 		this.model = mainFrame.getModel();
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/gear-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/gear-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/settings-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/settings-x24.png"));
 
 		putValue(NAME, "Settings...");
 		putValue(SHORT_DESCRIPTION, "Show application settings dialog.");

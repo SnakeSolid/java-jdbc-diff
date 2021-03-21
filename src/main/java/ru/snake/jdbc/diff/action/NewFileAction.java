@@ -41,8 +41,8 @@ public final class NewFileAction extends AbstractAction implements Action {
 		this.frame = frame;
 		this.model = frame.getModel();
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/new-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/new-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/file-new-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/file-new-x24.png"));
 
 		putValue(NAME, "New");
 		putValue(SHORT_DESCRIPTION, "Create new empty query in editor.");

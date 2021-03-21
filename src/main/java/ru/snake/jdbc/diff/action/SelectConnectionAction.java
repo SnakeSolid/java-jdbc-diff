@@ -36,8 +36,8 @@ public final class SelectConnectionAction extends AbstractAction implements Acti
 		this.mainFrame = mainFrame;
 		this.model = mainFrame.getModel();
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/plug-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/plug-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/connection-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/connection-x24.png"));
 
 		putValue(NAME, "Connection...");
 		putValue(SHORT_DESCRIPTION, "Select connection to use for build dataset");

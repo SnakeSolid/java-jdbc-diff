@@ -48,8 +48,8 @@ public final class ExecuteQueryAction extends AbstractAction
 		this.model = mainFrame.getModel();
 		this.config = config;
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/play-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/play-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/execute-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/execute-x24.png"));
 
 		putValue(NAME, "Execute");
 		putValue(SHORT_DESCRIPTION, "Execute all queries to couunt connection and build dataset");

@@ -42,8 +42,8 @@ public final class OpenFileAction extends AbstractAction implements Action {
 		this.frame = frame;
 		this.model = frame.getModel();
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/open-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/open-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/file-open-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/file-open-x24.png"));
 
 		putValue(NAME, "Open...");
 		putValue(SHORT_DESCRIPTION, "Open selected file in editor.");

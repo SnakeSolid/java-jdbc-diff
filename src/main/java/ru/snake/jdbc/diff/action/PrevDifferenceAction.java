@@ -50,8 +50,8 @@ public final class PrevDifferenceAction extends AbstractAction implements Action
 		this.leftModel = null;
 		this.rightModel = null;
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/prev-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/prev-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-prev-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-prev-x24.png"));
 
 		putValue(NAME, "Previous difference");
 		putValue(SHORT_DESCRIPTION, "Go to previous difference in comparison table");

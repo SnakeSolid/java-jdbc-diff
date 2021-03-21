@@ -50,8 +50,8 @@ public final class NextDifferenceAction extends AbstractAction implements Action
 		this.leftModel = null;
 		this.rightModel = null;
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/next-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/next-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-next-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/difference-next-x24.png"));
 
 		putValue(NAME, "Next difference");
 		putValue(SHORT_DESCRIPTION, "Go to next difference in comparison table");

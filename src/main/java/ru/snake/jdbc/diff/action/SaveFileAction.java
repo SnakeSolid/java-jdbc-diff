@@ -42,8 +42,8 @@ public final class SaveFileAction extends AbstractAction implements Action, Edit
 		this.frame = frame;
 		this.model = frame.getModel();
 
-		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/save-x16.png"));
-		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/save-x24.png"));
+		Icon smallIcon = new ImageIcon(ClassLoader.getSystemResource("icons/file-save-x16.png"));
+		Icon largeIcon = new ImageIcon(ClassLoader.getSystemResource("icons/file-save-x24.png"));
 
 		putValue(NAME, "Save");
 		putValue(SHORT_DESCRIPTION, "Save current editor content.");
