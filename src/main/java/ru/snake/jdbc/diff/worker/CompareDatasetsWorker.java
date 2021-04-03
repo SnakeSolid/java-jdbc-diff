@@ -384,7 +384,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		ComparedTable leftTable = ComparedTable.create(leftRows);
 		ComparedTable rightTable = ComparedTable.create(rightRows);
 
-		return new ComparedDataset(name, columnNames, leftTable, rightTable);
+		return ComparedDataset.create(name, columnNames, leftTable, rightTable);
 	}
 
 	/**

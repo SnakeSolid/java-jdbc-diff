@@ -42,6 +42,7 @@ import ru.snake.jdbc.diff.action.SaveAsFileAction;
 import ru.snake.jdbc.diff.action.SaveFileAction;
 import ru.snake.jdbc.diff.action.SelectConnectionAction;
 import ru.snake.jdbc.diff.action.SettingsAction;
+import ru.snake.jdbc.diff.action.StatisticsAction;
 import ru.snake.jdbc.diff.action.TextEditActionAdapter;
 import ru.snake.jdbc.diff.action.UndoAction;
 import ru.snake.jdbc.diff.component.DiffPanel;
@@ -50,6 +51,7 @@ import ru.snake.jdbc.diff.dialog.ConnectionDialog;
 import ru.snake.jdbc.diff.dialog.ObjectCompareDialog;
 import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 import ru.snake.jdbc.diff.dialog.SettingsDialog;
+import ru.snake.jdbc.diff.dialog.StatisticsDialog;
 import ru.snake.jdbc.diff.listener.TextEditorMouseListener;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.MainModel;
@@ -85,6 +87,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 	private ObjectViewDialog objectViewDialog;
 
+	private StatisticsDialog statisticsDialog;
+
 	private Action newFileAction;
 
 	private Action openFileAction;
@@ -102,6 +106,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 	private ExecuteQueryAction executeQueryAction;
 
 	private ExecuteSelectedAction executeSelectedAction;
+
+	private StatisticsAction statisticsAction;
 
 	private FirstDifferenceAction firstDifferenceAction;
 
@@ -160,6 +166,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		prepareConnectionAction = new SelectConnectionAction(this);
 		executeQueryAction = new ExecuteQueryAction(this, config);
 		executeSelectedAction = new ExecuteSelectedAction(this, config);
+		statisticsAction = new StatisticsAction(this);
 		firstDifferenceAction = new FirstDifferenceAction(this);
 		nextDifferenceAction = new NextDifferenceAction(this);
 		prevDifferenceAction = new PrevDifferenceAction(this);
@@ -189,6 +196,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 
 		JMenu differenceMenu = new JMenu("Difference");
 		differenceMenu.setMnemonic('D');
+		differenceMenu.add(statisticsAction);
+		differenceMenu.addSeparator();
 		differenceMenu.add(firstDifferenceAction);
 		differenceMenu.add(prevDifferenceAction);
 		differenceMenu.add(nextDifferenceAction);
@@ -215,6 +224,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		toolBar.add(prepareConnectionAction);
 		toolBar.add(executeQueryAction);
 		toolBar.add(executeSelectedAction);
+		toolBar.addSeparator();
+		toolBar.add(statisticsAction);
 		toolBar.addSeparator();
 		toolBar.add(firstDifferenceAction);
 		toolBar.add(prevDifferenceAction);
@@ -384,6 +395,20 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		}
 
 		return objectViewDialog;
+	}
+
+	/**
+	 * Returns lay initialized {@link StatisticsDialog} to show compare
+	 * statistics.
+	 *
+	 * @return statistics dialog
+	 */
+	public StatisticsDialog getStatisticsDialog() {
+		if (statisticsDialog == null) {
+			statisticsDialog = new StatisticsDialog(this);
+		}
+
+		return statisticsDialog;
 	}
 
 	/**

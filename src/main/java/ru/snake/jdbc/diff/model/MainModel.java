@@ -105,6 +105,13 @@ public class MainModel {
 	}
 
 	/**
+	 * @return the comparedDatasets
+	 */
+	public List<ComparedDataset> getComparedDatasets() {
+		return comparedDatasets;
+	}
+
+	/**
 	 * Returns true if this model contains query loaded from file or already
 	 * saved query.
 	 *
