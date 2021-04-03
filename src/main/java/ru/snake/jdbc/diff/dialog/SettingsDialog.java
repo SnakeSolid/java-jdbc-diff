@@ -34,11 +34,8 @@ import ru.snake.jdbc.diff.model.AlgorithmString;
  */
 public final class SettingsDialog extends JDialog implements ActionListener {
 
-	private static final List<String> ALGORITHM_NAMES = Arrays.asList(
-		"Classic: LCS algorithm (requires N^2 memory)",
-		"Greedy: take first available pair (requires 2*N compares)",
-		"Trivial: compate data rows by row (fast, no memory required)"
-	);
+	private static final List<String> ALGORITHM_NAMES = Arrays
+		.asList("Classic (accurate but slow)", "Greedy (fast)", "Trivial (compare row by row)");
 
 	private static final List<DiffAlgorithm> ALGORITHM_VALUES = Arrays
 		.asList(DiffAlgorithm.CLASSIC, DiffAlgorithm.GREEDY, DiffAlgorithm.TRIVIAL);
