@@ -10,13 +10,13 @@ import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyledDocument;
 
-import ru.snake.jdbc.diff.config.DiffAlgorithm;
 import ru.snake.jdbc.diff.document.SqlDocument;
 import ru.snake.jdbc.diff.listener.DocumentModifiedListener;
 import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
 import ru.snake.jdbc.diff.model.listener.ConnectionListener;
 import ru.snake.jdbc.diff.model.listener.EditorStateListener;
 import ru.snake.jdbc.diff.model.listener.ExecutingStateListener;
+import ru.snake.jdbc.diff.model.listener.ExecutionCompleteListener;
 
 /**
  * Main frame internal state model. Contains connections settings and text
@@ -39,7 +39,9 @@ public class MainModel {
 
 	private final List<ExecutingStateListener> executingStateListeners;
 
-	private DiffAlgorithm diffAlgorithm;
+	private final List<ExecutionCompleteListener> executionCompleteListeners;
+
+	private CompareSettings compareSettings;
 
 	private ConnectionSettings leftConnection;
 
@@ -61,7 +63,8 @@ public class MainModel {
 		this.editorStateListeners = new ArrayList<>();
 		this.comparedDatasetListeners = new ArrayList<>();
 		this.executingStateListeners = new ArrayList<>();
-		this.diffAlgorithm = null;
+		this.executionCompleteListeners = new ArrayList<>();
+		this.compareSettings = null;
 		this.leftConnection = null;
 		this.rightConnection = null;
 		this.executing = false;
@@ -345,6 +348,43 @@ public class MainModel {
 	}
 
 	/**
+	 * Adds new execution complete listener. Listener will be called when
+	 * executing state changed.
+	 *
+	 * @param listener
+	 *            listener
+	 */
+	public void addExecutionComplete(final ExecutionCompleteListener listener) {
+		executionCompleteListeners.add(listener);
+	}
+
+	/**
+	 * Removes given execution complete listener from model.
+	 *
+	 * @param listener
+	 *            listener
+	 */
+	public void removeExecutionComplete(final ExecutionCompleteListener listener) {
+		executionCompleteListeners.remove(listener);
+	}
+
+	/**
+	 * Fire execution complete event for all listeners.
+	 */
+	private void fireExecutionComplete() {
+		for (ExecutionCompleteListener listener : executionCompleteListeners) {
+			listener.executionComplete(this);
+		}
+	}
+
+	/**
+	 * Set execution complete and call all complete listeners.
+	 */
+	public void executionComplete() {
+		fireExecutionComplete();
+	}
+
+	/**
 	 * Reset query area content and current file. Fires editor changed event to
 	 * all listeners.
 	 *
@@ -405,20 +445,20 @@ public class MainModel {
 	}
 
 	/**
-	 * Set preferred diff algorithm.
+	 * Set compare settings.
 	 *
-	 * @param aDiffAlgorithm
-	 *            diff algorithm
+	 * @param aCompareSettings
+	 *            compare settings
 	 */
-	public void setDiffAlgorithm(final DiffAlgorithm aDiffAlgorithm) {
-		this.diffAlgorithm = aDiffAlgorithm;
+	public void setCompareSettings(final CompareSettings aCompareSettings) {
+		this.compareSettings = aCompareSettings;
 	}
 
 	/**
-	 * @return the diffAlgorithm
+	 * @return the compareSettings
 	 */
-	public DiffAlgorithm getDiffAlgorithm() {
-		return diffAlgorithm;
+	public CompareSettings getCompareSettings() {
+		return compareSettings;
 	}
 
 }

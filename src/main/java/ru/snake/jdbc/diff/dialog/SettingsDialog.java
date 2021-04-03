@@ -11,6 +11,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -25,6 +26,7 @@ import ru.snake.jdbc.diff.action.CloseDialogAction;
 import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.config.DiffAlgorithm;
 import ru.snake.jdbc.diff.model.AlgorithmString;
+import ru.snake.jdbc.diff.model.CompareSettings;
 
 /**
  * JDBC diff settings dialog.
@@ -44,11 +46,13 @@ public final class SettingsDialog extends JDialog implements ActionListener {
 
 	private DefaultComboBoxModel<AlgorithmString> diffAlgorithmListModel;
 
+	private JCheckBox showStatisticsBox;
+
 	private JButton saveButton;
 
 	private JButton cancelButton;
 
-	private DiffAlgorithm diffAlgorithm;
+	private CompareSettings compareSettings;
 
 	/**
 	 * Create new settings dialog.
@@ -62,7 +66,7 @@ public final class SettingsDialog extends JDialog implements ActionListener {
 		super(parent, "Settings...", true);
 
 		this.config = config;
-		this.diffAlgorithm = null;
+		this.compareSettings = null;
 
 		createComponents();
 
@@ -96,9 +100,9 @@ public final class SettingsDialog extends JDialog implements ActionListener {
 		settingsLabel.setFont(captionFont);
 		JLabel diffAlgorithmLabel = new JLabel("Diff algorithm:");
 		JComboBox<AlgorithmString> diffAlgorithmList = new JComboBox<>(diffAlgorithmListModel);
+		showStatisticsBox = new JCheckBox("Show statistics when query complete", config.isShowStatistics());
 		int selectedAlgorithm = ALGORITHM_VALUES.indexOf(config.getDiffAlgorithm());
 		diffAlgorithmList.setSelectedIndex(selectedAlgorithm);
-
 		saveButton = new JButton("Save Settings");
 		saveButton.addActionListener(this);
 		cancelButton = new JButton("Close");
@@ -118,6 +122,7 @@ public final class SettingsDialog extends JDialog implements ActionListener {
 						.addComponent(settingsLabel)
 						.addComponent(diffAlgorithmLabel)
 						.addComponent(diffAlgorithmList)
+						.addComponent(showStatisticsBox)
 					)
 				)
 				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
@@ -130,6 +135,7 @@ public final class SettingsDialog extends JDialog implements ActionListener {
 					.addComponent(settingsLabel)
 					.addComponent(diffAlgorithmLabel)
 					.addComponent(diffAlgorithmList)
+					.addComponent(showStatisticsBox)
 				.addPreferredGap(ComponentPlacement.UNRELATED)
 				.addGroup(layout.createParallelGroup()
 					.addComponent(saveButton)
@@ -150,32 +156,35 @@ public final class SettingsDialog extends JDialog implements ActionListener {
 			Object value = diffAlgorithmListModel.getSelectedItem();
 
 			if (value != null) {
-				diffAlgorithm = ((AlgorithmString) value).getAlgorithm();
+				DiffAlgorithm diffAlgorithm = ((AlgorithmString) value).getAlgorithm();
+				boolean showStatistics = showStatisticsBox.isSelected();
+
+				compareSettings = new CompareSettings(diffAlgorithm, showStatistics);
 			}
 
 			setVisible(false);
 		} else if (source == cancelButton) {
-			diffAlgorithm = null;
+			compareSettings = null;
 
 			setVisible(false);
 		}
 	}
 
 	/**
-	 * @return the diffAlgorithm
+	 * @return the compareSettings
 	 */
-	public DiffAlgorithm getDiffAlgorithm() {
-		return diffAlgorithm;
+	public CompareSettings getCompareSettings() {
+		return compareSettings;
 	}
 
 	/**
-	 * Returns {@code true} if diff algorithm selected. Otherwise returns
+	 * Returns {@code true} if settings selected. Otherwise returns
 	 * {@code false}.
 	 *
-	 * @return true if algorithm selected
+	 * @return true if settings selected
 	 */
-	public boolean isDiffAlgorithmSelected() {
-		return diffAlgorithm != null;
+	public boolean isCompareSettingsSelected() {
+		return compareSettings != null;
 	}
 
 }

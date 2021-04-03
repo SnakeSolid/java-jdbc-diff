@@ -10,8 +10,8 @@ import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
 import ru.snake.jdbc.diff.MainFrame;
-import ru.snake.jdbc.diff.config.DiffAlgorithm;
 import ru.snake.jdbc.diff.dialog.SettingsDialog;
+import ru.snake.jdbc.diff.model.CompareSettings;
 import ru.snake.jdbc.diff.model.MainModel;
 
 /**
@@ -52,10 +52,10 @@ public final class SettingsAction extends AbstractAction implements Action {
 		SettingsDialog dialog = mainFrame.getSettingsDialog();
 		dialog.setVisible(true);
 
-		if (dialog.isDiffAlgorithmSelected()) {
-			DiffAlgorithm diffAlgorithm = dialog.getDiffAlgorithm();
+		if (dialog.isCompareSettingsSelected()) {
+			CompareSettings compareSettings = dialog.getCompareSettings();
 
-			model.setDiffAlgorithm(diffAlgorithm);
+			model.setCompareSettings(compareSettings);
 		}
 	}
 

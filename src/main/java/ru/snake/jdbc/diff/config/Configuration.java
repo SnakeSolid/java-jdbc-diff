@@ -19,6 +19,8 @@ public final class Configuration {
 
 	private DiffAlgorithm diffAlgorithm;
 
+	private boolean showStatistics;
+
 	private Map<String, BlobParserConfig> blobParsers;
 
 	private Map<String, DriverConfig> drivers;
@@ -30,6 +32,7 @@ public final class Configuration {
 		this.font = new FontConfig();
 		this.rowSimilarity = DEFAULT_SIMILARITY;
 		this.diffAlgorithm = DiffAlgorithm.GREEDY;
+		this.showStatistics = false;
 		this.blobParsers = Collections.emptyMap();
 		this.drivers = Collections.emptyMap();
 	}
@@ -60,6 +63,13 @@ public final class Configuration {
 	}
 
 	/**
+	 * @return the showStatistics
+	 */
+	public boolean isShowStatistics() {
+		return showStatistics;
+	}
+
+	/**
 	 * @return the blobMappers
 	 */
 	public Map<String, BlobParserConfig> getBlobParsers() {
@@ -78,7 +88,7 @@ public final class Configuration {
 	@Override
 	public String toString() {
 		return "Configuration [font=" + font + ", rowSimilarity=" + rowSimilarity + ", diffAlgorithm=" + diffAlgorithm
-				+ ", blobParsers=" + blobParsers + ", drivers=" + drivers + "]";
+				+ ", showStatistics=" + showStatistics + ", blobParsers=" + blobParsers + ", drivers=" + drivers + "]";
 	}
 
 }

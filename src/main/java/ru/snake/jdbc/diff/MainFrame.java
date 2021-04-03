@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseListener;
+import java.util.Optional;
 
 import javax.swing.Action;
 import javax.swing.ActionMap;
@@ -53,9 +54,11 @@ import ru.snake.jdbc.diff.dialog.ObjectViewDialog;
 import ru.snake.jdbc.diff.dialog.SettingsDialog;
 import ru.snake.jdbc.diff.dialog.StatisticsDialog;
 import ru.snake.jdbc.diff.listener.TextEditorMouseListener;
+import ru.snake.jdbc.diff.model.CompareSettings;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.MainModel;
 import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
+import ru.snake.jdbc.diff.model.listener.ExecutionCompleteListener;
 
 /**
  * Main application frame.
@@ -63,7 +66,7 @@ import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
  * @author snake
  *
  */
-public final class MainFrame extends JFrame implements ComparedDatasetListener {
+public final class MainFrame extends JFrame implements ComparedDatasetListener, ExecutionCompleteListener {
 
 	private static final int PREFERRED_WIDTH = 800;
 
@@ -147,6 +150,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 		pack();
 
 		model.addComparedDatasetListener(this);
+		model.addExecutionComplete(this);
 		queryText.requestFocusInWindow();
 	}
 
@@ -433,6 +437,21 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener {
 			DiffPanel diffPanel = new DiffPanel(this, dataset);
 
 			datasetTabs.addTab(dataset.getName(), diffPanel);
+		}
+	}
+
+	@Override
+	public void executionComplete(final MainModel aModel) {
+		if (model == aModel) {
+			boolean showStatistics = Optional.ofNullable(model.getCompareSettings())
+				.map(CompareSettings::isShowStatistics)
+				.orElse(false);
+
+			if (showStatistics) {
+				StatisticsDialog dialog = getStatisticsDialog();
+				dialog.setStatistics(model.getComparedDatasets());
+				dialog.setVisible(true);
+			}
 		}
 	}
 

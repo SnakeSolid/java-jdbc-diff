@@ -30,6 +30,7 @@ import ru.snake.jdbc.diff.blob.BlobParserFactory;
 import ru.snake.jdbc.diff.blob.DefaultBlobParserFactory;
 import ru.snake.jdbc.diff.config.Configuration;
 import ru.snake.jdbc.diff.config.DiffAlgorithm;
+import ru.snake.jdbc.diff.model.CompareSettings;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.ComparedRow;
 import ru.snake.jdbc.diff.model.ComparedTable;
@@ -335,7 +336,9 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 		final List<List<TableCell>> rightRows,
 		final int nCellsEquals
 	) {
-		DiffAlgorithm diffAlgorithm = Optional.ofNullable(model.getDiffAlgorithm()).orElseGet(config::getDiffAlgorithm);
+		DiffAlgorithm diffAlgorithm = Optional.ofNullable(model.getCompareSettings())
+			.map(CompareSettings::getDiffAlgorithm)
+			.orElseGet(config::getDiffAlgorithm);
 		RowsEqualsPredicate predicate;
 
 		switch (diffAlgorithm) {
@@ -471,6 +474,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 			Message.showError(errorMassage);
 		}
 
+		model.executionComplete();
 		model.setExecuting(false);
 	}
 
