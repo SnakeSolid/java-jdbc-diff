@@ -461,9 +461,11 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 	@Override
 	protected void done() {
 		List<String> errorMessages;
+		boolean success = false;
 
 		try {
 			errorMessages = get();
+			success = true;
 		} catch (InterruptedException | ExecutionException e) {
 			errorMessages = Collections.singletonList(unrollMessages(e));
 		}
@@ -474,8 +476,7 @@ public final class CompareDatasetsWorker extends SwingWorker<List<String>, Void>
 			Message.showError(errorMassage);
 		}
 
-		model.executionComplete();
-		model.setExecuting(false);
+		model.setExecuting(false, success);
 	}
 
 	/**

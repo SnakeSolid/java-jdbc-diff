@@ -11,7 +11,9 @@ public interface ExecutingStateListener {
 	 *            calling model
 	 * @param executing
 	 *            new executing state
+	 * @param success
+	 *            complete status
 	 */
-	void executingStateChanged(MainModel model, boolean executing);
+	void executingStateChanged(MainModel model, boolean executing, boolean success);
 
 }

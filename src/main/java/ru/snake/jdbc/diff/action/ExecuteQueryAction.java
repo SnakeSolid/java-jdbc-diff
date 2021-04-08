@@ -70,7 +70,7 @@ public final class ExecuteQueryAction extends AbstractAction
 			String queryText = queryDocument.getText(0, queryLength);
 			CompareDatasetsWorker worker = new CompareDatasetsWorker(model, config, queryText);
 
-			model.setExecuting(true);
+			model.setExecuting(true, false);
 			worker.execute();
 		} catch (BadLocationException exception) {
 			Message.showError(exception);
@@ -86,7 +86,7 @@ public final class ExecuteQueryAction extends AbstractAction
 	}
 
 	@Override
-	public void executingStateChanged(final MainModel aModel, final boolean executing) {
+	public void executingStateChanged(final MainModel aModel, final boolean executing, final boolean success) {
 		if (model == aModel) {
 			updateState();
 		}

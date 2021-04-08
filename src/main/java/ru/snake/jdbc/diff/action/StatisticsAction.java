@@ -60,7 +60,7 @@ public final class StatisticsAction extends AbstractAction implements Action, Ex
 	}
 
 	@Override
-	public void executingStateChanged(final MainModel aModel, final boolean executing) {
+	public void executingStateChanged(final MainModel aModel, final boolean executing, final boolean success) {
 		if (model == aModel) {
 			updateState();
 		}

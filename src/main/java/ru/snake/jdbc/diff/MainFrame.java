@@ -58,7 +58,7 @@ import ru.snake.jdbc.diff.model.CompareSettings;
 import ru.snake.jdbc.diff.model.ComparedDataset;
 import ru.snake.jdbc.diff.model.MainModel;
 import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
-import ru.snake.jdbc.diff.model.listener.ExecutionCompleteListener;
+import ru.snake.jdbc.diff.model.listener.ExecutingStateListener;
 
 /**
  * Main application frame.
@@ -66,7 +66,7 @@ import ru.snake.jdbc.diff.model.listener.ExecutionCompleteListener;
  * @author snake
  *
  */
-public final class MainFrame extends JFrame implements ComparedDatasetListener, ExecutionCompleteListener {
+public final class MainFrame extends JFrame implements ComparedDatasetListener, ExecutingStateListener {
 
 	private static final int PREFERRED_WIDTH = 800;
 
@@ -150,7 +150,7 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener, 
 		pack();
 
 		model.addComparedDatasetListener(this);
-		model.addExecutionComplete(this);
+		model.addExecutingListener(this);
 		queryText.requestFocusInWindow();
 	}
 
@@ -441,8 +441,8 @@ public final class MainFrame extends JFrame implements ComparedDatasetListener, 
 	}
 
 	@Override
-	public void executionComplete(final MainModel aModel) {
-		if (model == aModel) {
+	public void executingStateChanged(final MainModel aModel, final boolean executing, final boolean success) {
+		if (model == aModel && !executing && success) {
 			boolean showStatistics = Optional.ofNullable(model.getCompareSettings())
 				.map(CompareSettings::isShowStatistics)
 				.orElse(false);

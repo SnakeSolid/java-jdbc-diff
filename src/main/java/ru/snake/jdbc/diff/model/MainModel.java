@@ -16,7 +16,6 @@ import ru.snake.jdbc.diff.model.listener.ComparedDatasetListener;
 import ru.snake.jdbc.diff.model.listener.ConnectionListener;
 import ru.snake.jdbc.diff.model.listener.EditorStateListener;
 import ru.snake.jdbc.diff.model.listener.ExecutingStateListener;
-import ru.snake.jdbc.diff.model.listener.ExecutionCompleteListener;
 
 /**
  * Main frame internal state model. Contains connections settings and text
@@ -38,8 +37,6 @@ public class MainModel {
 	private final List<ComparedDatasetListener> comparedDatasetListeners;
 
 	private final List<ExecutingStateListener> executingStateListeners;
-
-	private final List<ExecutionCompleteListener> executionCompleteListeners;
 
 	private CompareSettings compareSettings;
 
@@ -63,7 +60,6 @@ public class MainModel {
 		this.editorStateListeners = new ArrayList<>();
 		this.comparedDatasetListeners = new ArrayList<>();
 		this.executingStateListeners = new ArrayList<>();
-		this.executionCompleteListeners = new ArrayList<>();
 		this.compareSettings = null;
 		this.leftConnection = null;
 		this.rightConnection = null;
@@ -319,10 +315,12 @@ public class MainModel {
 	 *
 	 * @param state
 	 *            executing state
+	 * @param success
+	 *            complete status
 	 */
-	private void fireExecutingState(final boolean state) {
+	private void fireExecutingState(final boolean state, final boolean success) {
 		for (ExecutingStateListener listener : executingStateListeners) {
-			listener.executingStateChanged(this, state);
+			listener.executingStateChanged(this, state, success);
 		}
 	}
 
@@ -331,11 +329,13 @@ public class MainModel {
 	 *
 	 * @param state
 	 *            new state value
+	 * @param success
+	 *            complete status
 	 */
-	public void setExecuting(final boolean state) {
+	public void setExecuting(final boolean state, final boolean success) {
 		this.executing = state;
 
-		fireExecutingState(state);
+		fireExecutingState(state, success);
 	}
 
 	/**
@@ -345,43 +345,6 @@ public class MainModel {
 	 */
 	public boolean isExecuting() {
 		return executing;
-	}
-
-	/**
-	 * Adds new execution complete listener. Listener will be called when
-	 * executing state changed.
-	 *
-	 * @param listener
-	 *            listener
-	 */
-	public void addExecutionComplete(final ExecutionCompleteListener listener) {
-		executionCompleteListeners.add(listener);
-	}
-
-	/**
-	 * Removes given execution complete listener from model.
-	 *
-	 * @param listener
-	 *            listener
-	 */
-	public void removeExecutionComplete(final ExecutionCompleteListener listener) {
-		executionCompleteListeners.remove(listener);
-	}
-
-	/**
-	 * Fire execution complete event for all listeners.
-	 */
-	private void fireExecutionComplete() {
-		for (ExecutionCompleteListener listener : executionCompleteListeners) {
-			listener.executionComplete(this);
-		}
-	}
-
-	/**
-	 * Set execution complete and call all complete listeners.
-	 */
-	public void executionComplete() {
-		fireExecutionComplete();
 	}
 
 	/**
