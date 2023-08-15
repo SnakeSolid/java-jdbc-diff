@@ -1,6 +1,7 @@
 package ru.snake.jdbc.diff.worker.driver;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InaccessibleObjectException;
 import java.sql.Driver;
 import java.sql.DriverAction;
 import java.sql.DriverManager;
@@ -43,7 +44,8 @@ public final class DriverDeregistrator {
 
 				success = true;
 			}
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+		} catch (InaccessibleObjectException | NoSuchFieldException | SecurityException | IllegalArgumentException
+				| IllegalAccessException e) {
 			LOG.warn("Failed to get driver list", e);
 		}
 
