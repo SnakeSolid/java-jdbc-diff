@@ -6,6 +6,8 @@ parsers to convert BLOB's to Java objects.
 Parsers must return objects with simple hierarchy consisting of Maps, Lists and wrapped primitive types (numbers and
 strings).
 
+![User interface](images/jdbc-diff.png "User interface of JDBC Diff")
+
 ## Configuration
 
 Configuration file example:
@@ -21,7 +23,7 @@ rowSimilarity: 80 # percent of different values in row to count rows different
 rdiffAlgorithm: GREEDY # select default diff algorithm: CLASSIC, GREEDY or TRIVIAL. By default - GREEDY
 
 blobParsers: # define BLOB parser libraries
-  " Do not parser BLOBs":
+  " Do not parse BLOBs":
     libraryPath: # in library is NULL this parser will be replace with default
     parserClass:
 
